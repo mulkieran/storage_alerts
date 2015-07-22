@@ -24,7 +24,6 @@ from six import add_metaclass
 
 class ScannerState(object):
     """ Class for defining enumeration of states of a scanner. """
-    # pylint: disable=too-few-public-methods
 
     def __init__(self, desc):
         """ Initializer.
@@ -39,7 +38,7 @@ class ScannerState(object):
 
 class ScannerStates(object):
     """ Organizes all allowed states of a scanner object. """
-    # pylint: disable=too-few-public-methods
+
     MAYBE = ScannerState("May be in the process of recognizing the error.")
     YES = ScannerState("The error has been recognized.")
     NO = ScannerState("The entry just read does not indicate the error.")
