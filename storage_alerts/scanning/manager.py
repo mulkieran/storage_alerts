@@ -60,3 +60,7 @@ class ScannerManager(object):
     def _cullScanners(self):
         """ Remove scanners according to a scanner ejection policy. """
         pass
+
+    def clearData(self):
+        """ Clear all temporary data. """
+        self._scanners = []

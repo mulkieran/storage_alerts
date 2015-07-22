@@ -53,22 +53,24 @@ class Scanner(object):
     """
 
     @abc.abstractmethod
+    def _consume(self, entry):
+        """ Consume a journal entry.
+
+            :param ? entry: a journal entry
+
+            Updates internal structures that indicate match or not.
+        """
+        raise NotImplementedError("Abstract Method")
+
     def consume(self, entry):
         """ Consume a journal entry.
 
             :param ? entry: a journal entry
             :rtype: ScannerState
             :returns: a state indicating status of scanner
-
-            Updates internal structures that indicate match or not.
         """
+        self._consume(entry)
         return self.state
 
-    @property
-    def state(self):
-        """ Returns the state of this scanner.
-
-            :rtype: ScannerState
-            :returns: a state indicating status of scanner
-        """
-        pass
+    state = abc.abstractproperty(doc="the state of this scanner")
+    evidence = abc.abstractproperty(doc="the evidence for the decision")
