@@ -51,7 +51,6 @@ class Reader(object):
 
             Generates a sequence of matching Scanner objects.
         """
-        self._manager.clearData()
         for entry in self._journalEntries(start, end):
             for scanner in self._manager.processEntry(entry):
                 yield scanner

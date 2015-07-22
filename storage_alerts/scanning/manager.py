@@ -27,17 +27,14 @@ class ScannerManager(object):
     #     * all scanner objects in self._scanners are in MAYBE state
     #     * there are no duplicate classes in self._klasses
 
-    def __init__(self):
-        self._scanners = []
-        self._klasses = set()
-
-    def registerScannerClasses(self, klasses):
-        """ Register scanner classes.
+    def __init__(self, klasses):
+        """ Initializer.
 
             :param klasses: list of Scanner classes
             :type klasses: any sequence-like object
         """
-        self._klasses = self._klasses.union(set(klasses))
+        self._scanners = []
+        self._klasses = set(klasses)
 
     def processEntry(self, entry):
         """ Process a journal entry.
@@ -60,7 +57,3 @@ class ScannerManager(object):
     def _cullScanners(self):
         """ Remove scanners according to a scanner ejection policy. """
         pass
-
-    def clearData(self):
-        """ Clear all temporary data. """
-        self._scanners = []
