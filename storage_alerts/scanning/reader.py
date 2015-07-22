@@ -24,7 +24,8 @@ class Reader(object):
     def __init__(self, manager):
         """ Initializer.
 
-            :param ScannerManager manager: manager for scanner classes
+            :param manager: manager for scanner classes
+            :type manager: :class:`.manager.ScannerManager`
         """
         self._manager = manager
 
@@ -35,7 +36,11 @@ class Reader(object):
             :param end: end time, if None, until present
             :type end: ? or NoneType
         """
-        pass
+        # pylint: disable=pointless-statement
+        start
+        end
+        self
+        return []
 
     def matches(self, start, end=None):
         """ Process log entries from start to end.

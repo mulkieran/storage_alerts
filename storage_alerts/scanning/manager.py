@@ -44,7 +44,7 @@ class ScannerManager(object):
 
             :param ? entry: a journal entry
             :returns: a list of matching objects, may be empty
-            :rtype: list of Scanner
+            :rtype: list of :class:`.scanner.Scanner`
 
             Use all current scanners, which all have state MAYBE, and also
             instantiates new objects for every registered scanner class.

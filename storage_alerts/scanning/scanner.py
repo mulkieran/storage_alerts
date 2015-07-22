@@ -65,11 +65,14 @@ class Scanner(object):
         """ Consume a journal entry.
 
             :param ? entry: a journal entry
-            :rtype: ScannerState
+            :rtype: :class:`.scanner.ScannerState`
             :returns: a state indicating status of scanner
         """
         self._consume(entry)
         return self.state
 
     state = abc.abstractproperty(doc="the state of this scanner")
+    """ :rtype: :class:`.scanner.ScannerState` """
+
     evidence = abc.abstractproperty(doc="the evidence for the decision")
+    """ :rtype: list of ? """
