@@ -18,11 +18,11 @@
 
 """ A demonstration module. """
 
-from ..scanning.scanner import Scanner
-from ..scanning.scanner import ScannerStates
+from ..scanning.recognizer import Recognizer
+from ..scanning.recognizer import RecognizerStates
 
-class DemoScanner(Scanner):
-    """ A demonstration scanner. """
+class DemoRecognizer(Recognizer):
+    """ A demonstration recognizer. """
 
     def _consume(self, entry):
         pass
@@ -31,7 +31,7 @@ class DemoScanner(Scanner):
     def state(self):
         # pylint: disable=missing-docstring
         self # pylint: disable=pointless-statement
-        return ScannerStates.NO
+        return RecognizerStates.NO
 
     @property
     def evidence(self):

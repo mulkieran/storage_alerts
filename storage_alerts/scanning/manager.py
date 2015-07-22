@@ -16,12 +16,12 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" For managing scanner objects. """
+""" For managing  objects. """
 
-from .scanner import ScannerStates
+from .recognizer import RecognizerStates
 
-class ScannerManager(object):
-    """ Maintains a set of Scanner classes. """
+class RecognizerManager(object):
+    """ Maintains a set of Recognizer classes. """
 
     #    Invariants:
     #     * all scanner objects in self._scanners are in MAYBE state
@@ -30,7 +30,7 @@ class ScannerManager(object):
     def __init__(self, klasses):
         """ Initializer.
 
-            :param klasses: list of Scanner classes
+            :param klasses: list of Recognizer classes
             :type klasses: any sequence-like object
         """
         self._scanners = []
@@ -41,7 +41,7 @@ class ScannerManager(object):
 
             :param ? entry: a journal entry
             :returns: a list of matching objects, may be empty
-            :rtype: list of :class:`.scanner.Scanner`
+            :rtype: list of :class:`.scanner.Recognizer`
 
             Use all current scanners, which all have state MAYBE, and also
             instantiates new objects for every registered scanner class.
@@ -49,11 +49,11 @@ class ScannerManager(object):
         scanners = self._scanners + [c() for c in self._klasses]
         for scanner in scanners:
             scanner.consume(entry)
-        yeses = [s for s in scanners if s.state == ScannerStates.YES]
-        self._scanners = [s for s in scanners if s.state == ScannerStates.MAYBE]
-        self._cullScanners()
+        yeses = [s for s in scanners if s.state == RecognizerStates.YES]
+        self._scanners = [s for s in scanners if s.state == RecognizerStates.MAYBE]
+        self._cullRecognizers()
         return yeses
 
-    def _cullScanners(self):
+    def _cullRecognizers(self):
         """ Remove scanners according to a scanner ejection policy. """
         pass

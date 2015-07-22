@@ -22,7 +22,7 @@ import abc
 
 from six import add_metaclass
 
-class ScannerState(object):
+class RecognizerState(object):
     """ Class for defining enumeration of states of a scanner. """
 
     def __init__(self, desc):
@@ -36,16 +36,16 @@ class ScannerState(object):
         return self._desc
     __repr__ = __str__
 
-class ScannerStates(object):
+class RecognizerStates(object):
     """ Organizes all allowed states of a scanner object. """
 
-    MAYBE = ScannerState("May be in the process of recognizing the error.")
-    YES = ScannerState("The error has been recognized.")
-    NO = ScannerState("The entry just read does not indicate the error.")
+    MAYBE = RecognizerState("May be in the process of recognizing the error.")
+    YES = RecognizerState("The error has been recognized.")
+    NO = RecognizerState("The entry just read does not indicate the error.")
 
 @add_metaclass(abc.ABCMeta)
-class Scanner(object):
-    """ Abstract parent class of Scanner classes.
+class Recognizer(object):
+    """ Abstract parent class of Recognizer classes.
 
         A scanner may need to read multiple journal
         entries before deciding whether it has found a match.
@@ -65,14 +65,14 @@ class Scanner(object):
         """ Consume a journal entry.
 
             :param ? entry: a journal entry
-            :rtype: :class:`.scanner.ScannerState`
+            :rtype: :class:`.scanner.RecognizerState`
             :returns: a state indicating status of scanner
         """
         self._consume(entry)
         return self.state
 
     state = abc.abstractproperty(doc="the state of this scanner")
-    """ :rtype: :class:`.scanner.ScannerState` """
+    """ :rtype: :class:`.scanner.RecognizerState` """
 
     evidence = abc.abstractproperty(doc="the evidence for the decision")
     """ :rtype: list of ? """
