@@ -57,11 +57,14 @@ class Scanner(object):
         """ Consume a journal entry.
 
             :param ? entry: a journal entry
+            :rtype: ScannerState
+            :returns: a state indicating status of scanner
 
             Updates internal structures that indicate match or not.
         """
-        pass
+        return self.state
 
+    @property
     def state(self):
         """ Returns the state of this scanner.
 
