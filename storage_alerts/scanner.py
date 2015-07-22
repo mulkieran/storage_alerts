@@ -40,13 +40,17 @@ class ScannerState(object):
 class ScannerStates(object):
     """ Organizes all allowed states of a scanner object. """
     # pylint: disable=too-few-public-methods
-    MAYBE = ScannerState("Maybe")
-    YES = ScannerState("Yes")
-    NO = ScannerState("No")
+    MAYBE = ScannerState("May be in the process of recognizing the error.")
+    YES = ScannerState("The error has been recognized.")
+    NO = ScannerState("The entry just read does not indicate the error.")
 
 @add_metaclass(abc.ABCMeta)
 class Scanner(object):
-    """ Abstract parent class of Scanner classes. """
+    """ Abstract parent class of Scanner classes.
+
+        A scanner may need to read multiple journal
+        entries before deciding whether it has found a match.
+    """
 
     @abc.abstractmethod
     def consume(self, entry):
