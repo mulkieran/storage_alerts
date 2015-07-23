@@ -43,4 +43,6 @@ class YesRecognizer(Recognizer):
     @property
     def info(self):
         # pylint: disable=no-self-use
-        return dict()
+        return {
+           'MESSAGE': "There is a message in the journal."
+        }
