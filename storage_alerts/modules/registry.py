@@ -18,10 +18,10 @@
 
 """ A registry of internally held modules. """
 
-from . import demo
+from . import no
 
 class Register(object):
     """ The registry of modules. """
     modules = [
-        demo
+        no
     ]

@@ -16,13 +16,13 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A demonstration module. """
+""" A module that does not recognize any alerts. """
 
 from ..scanning.recognizer import Recognizer
 from ..scanning.recognizer import RecognizerStates
 
-class DemoRecognizer(Recognizer):
-    """ A demonstration recognizer. """
+class NoRecognizer(Recognizer):
+    """ A recognizer that always says no. """
 
     def _consume(self, entry):
         pass
