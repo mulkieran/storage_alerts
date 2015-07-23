@@ -21,15 +21,8 @@
 class Reader(object):
     """ Reads and processes journal entries. """
 
-    def __init__(self, manager):
-        """ Initializer.
-
-            :param manager: manager for scanner classes
-            :type manager: :class:`.manager.ScannerManager`
-        """
-        self._manager = manager
-
-    def _journalEntries(self, start, end=None):
+    @classmethod
+    def _journalEntries(cls, start, end=None):
         """ Generate a sequence of journal entries.
 
             :param ? time: start time
@@ -39,18 +32,21 @@ class Reader(object):
         # pylint: disable=pointless-statement
         start
         end
-        self
+        cls
         return []
 
-    def matches(self, start, end=None):
+    @classmethod
+    def matches(cls, manager, start, end=None):
         """ Process log entries from start to end.
 
+            :param manager: manager for scanner classes
+            :type manager: :class:`.manager.ScannerManager`
             :param ? time: start time
             :param end: end time, if None, until present
             :type end: ? or NoneType
 
             Generates a sequence of matching Scanner objects.
         """
-        for entry in self._journalEntries(start, end):
-            for scanner in self._manager.processEntry(entry):
+        for entry in cls._journalEntries(start, end):
+            for scanner in manager.processEntry(entry):
                 yield scanner
