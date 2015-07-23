@@ -39,7 +39,7 @@ class RecognizerManager(object):
     def processEntry(self, entry):
         """ Process a journal entry.
 
-            :param ? entry: a journal entry
+            :param :class:`.Entry` entry: a journal entry
             :returns: a list of matching objects, may be empty
             :rtype: list of :class:`.scanner.Recognizer`
 

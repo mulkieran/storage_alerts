@@ -64,7 +64,7 @@ class Recognizer(object):
     def _consume(self, entry):
         """ Consume a journal entry.
 
-            :param ? entry: a journal entry
+            :param :class:`.Entry` entry: a journal entry
 
             Updates internal structures that indicate match or not.
         """
@@ -73,7 +73,7 @@ class Recognizer(object):
     def consume(self, entry):
         """ Consume a journal entry.
 
-            :param ? entry: a journal entry
+            :param :class:`.Entry` entry: a journal entry
             :rtype: :class:`.scanner.RecognizerState`
             :returns: a state indicating status of scanner
         """
