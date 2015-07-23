@@ -55,6 +55,11 @@ class Recognizer(object):
         should be taken out of service.
     """
 
+    description = abc.abstractproperty(doc="brief description")
+
+    def __str__(self):
+        return self.description
+
     @abc.abstractmethod
     def _consume(self, entry):
         """ Consume a journal entry.

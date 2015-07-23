@@ -24,6 +24,8 @@ from ..recognizer import RecognizerStates
 class HundredRecognizer(Recognizer):
     """ A recognizer that says yes after 100 messages. """
 
+    description = "a hundred messages recognizer"
+
     def __init__(self):
         self._evidence = []
 

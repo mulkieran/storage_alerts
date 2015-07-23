@@ -24,6 +24,8 @@ from ..recognizer import RecognizerStates
 class NoRecognizer(Recognizer):
     """ A recognizer that always says no. """
 
+    description = "does not recognize any errors"
+
     def _consume(self, entry):
         pass
 

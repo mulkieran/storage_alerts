@@ -24,6 +24,8 @@ from ..recognizer import RecognizerStates
 class YesRecognizer(Recognizer):
     """ A recognizer that always says yes. """
 
+    description = "any journal entry represents an error"
+
     def __init__(self):
         self._evidence = []
 
