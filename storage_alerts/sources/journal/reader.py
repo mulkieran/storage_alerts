@@ -25,9 +25,9 @@ class Reader(object):
     def _journalEntries(cls, start, end=None):
         """ Generate a sequence of journal entries.
 
-            :param ? time: start time
+            :param datetime time: start time
             :param end: end time, if None, until present
-            :type end: ? or NoneType
+            :type end: datetime or NoneType
         """
         # pylint: disable=pointless-statement
         start
@@ -41,9 +41,9 @@ class Reader(object):
 
             :param manager: manager for scanner classes
             :type manager: :class:`.manager.ScannerManager`
-            :param ? time: start time
+            :param datetime time: start time
             :param end: end time, if None, until present
-            :type end: ? or NoneType
+            :type end: datetime or NoneType
 
             Generates a sequence of matching Scanner objects.
         """
