@@ -18,8 +18,8 @@
 
 """ A module that panics for every journal entry. """
 
-from ..recognizer import Recognizer
-from ..recognizer import RecognizerStates
+from ..scanning.journal.recognizer import Recognizer
+from ..scanning.journal.recognizer import RecognizerStates
 
 class YesRecognizer(Recognizer):
     """ A recognizer that always says yes. """

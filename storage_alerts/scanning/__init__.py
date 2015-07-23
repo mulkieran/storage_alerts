@@ -1,1 +1,1 @@
-""" Module for scanning journal entries. """
+""" Module for scanning some source of alerts. """

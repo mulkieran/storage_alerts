@@ -18,7 +18,7 @@
 
 """ For managing  objects. """
 
-from ..recognizer import RecognizerStates
+from .recognizer import RecognizerStates
 
 class RecognizerManager(object):
     """ Maintains a set of Recognizer classes. """
