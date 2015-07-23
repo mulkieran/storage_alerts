@@ -34,10 +34,8 @@ class YesRecognizer(Recognizer):
 
     @property
     def state(self):
-        # pylint: disable=missing-docstring
         return RecognizerStates.YES if self._evidence else RecognizerStates.NO
 
     @property
     def evidence(self):
-        # pylint: disable=missing-docstring
         return self._evidence

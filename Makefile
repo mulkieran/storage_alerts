@@ -5,4 +5,5 @@ check:
 		--disable=abstract-class-little-used \
 		--disable=abstract-class-not-used \
 		--disable=invalid-name \
+		--disable=missing-docstring \
 		--disable=too-few-public-methods

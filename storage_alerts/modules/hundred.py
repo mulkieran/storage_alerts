@@ -34,7 +34,6 @@ class HundredRecognizer(Recognizer):
 
     @property
     def state(self):
-        # pylint: disable=missing-docstring
         l = len(self._evidence)
         if l == 0:
             return RecognizerStates.NO
@@ -44,5 +43,4 @@ class HundredRecognizer(Recognizer):
 
     @property
     def evidence(self):
-        # pylint: disable=missing-docstring
         return self._evidence

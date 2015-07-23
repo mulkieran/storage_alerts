@@ -31,12 +31,10 @@ class NoRecognizer(Recognizer):
 
     @property
     def state(self):
-        # pylint: disable=missing-docstring
         self # pylint: disable=pointless-statement
         return RecognizerStates.NO
 
     @property
     def evidence(self):
-        # pylint: disable=missing-docstring
         self # pylint: disable=pointless-statement
         return []
