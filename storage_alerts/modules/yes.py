@@ -16,14 +16,26 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A registry of internally held modules. """
+""" A module that panics for every journal entry. """
 
-from . import no
-from . import yes
+from ..recognizer import Recognizer
+from ..recognizer import RecognizerStates
 
-class Register(object):
-    """ The registry of modules. """
-    modules = [
-        no,
-        yes
-    ]
+class YesRecognizer(Recognizer):
+    """ A recognizer that always says yes. """
+
+    def __init__(self):
+        self._evidence = []
+
+    def _consume(self, entry):
+        self._evidence = [entry]
+
+    @property
+    def state(self):
+        # pylint: disable=missing-docstring
+        return RecognizerStates.YES if self._evidence else RecognizerStates.NO
+
+    @property
+    def evidence(self):
+        # pylint: disable=missing-docstring
+        return self._evidence
