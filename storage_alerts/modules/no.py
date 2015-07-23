@@ -18,8 +18,8 @@
 
 """ A module that does not recognize any alerts. """
 
-from ..scanning.journal.recognizer import Recognizer
-from ..scanning.journal.recognizer import RecognizerStates
+from ..sources.journal.recognizer import Recognizer
+from ..sources.journal.recognizer import RecognizerStates
 
 class NoRecognizer(Recognizer):
     """ A recognizer that always says no. """
