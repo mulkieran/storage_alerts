@@ -16,16 +16,31 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A registry of internally held modules. """
+""" A module that interprets 100 journal entries as an error. """
 
-from . import hundred
-from . import no
-from . import yes
+from ..recognizer import Recognizer
+from ..recognizer import RecognizerStates
 
-class Register(object):
-    """ The registry of modules. """
-    modules = [
-        hundred,
-        no,
-        yes
-    ]
+class HundredRecognizer(Recognizer):
+    """ A recognizer that says yes after 100 messages. """
+
+    def __init__(self):
+        self._evidence = []
+
+    def _consume(self, entry):
+        self._evidence.append(entry)
+
+    @property
+    def state(self):
+        # pylint: disable=missing-docstring
+        l = len(self._evidence)
+        if l == 0:
+            return RecognizerStates.NO
+        if l >= 100:
+            return RecognizerStates.YES
+        return RecognizerStates.MAYBE
+
+    @property
+    def evidence(self):
+        # pylint: disable=missing-docstring
+        return self._evidence
