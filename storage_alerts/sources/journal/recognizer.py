@@ -86,4 +86,7 @@ class Recognizer(object):
     """ :rtype: :class:`.scanner.RecognizerState` """
 
     evidence = abc.abstractproperty(doc="the evidence for the decision")
-    """ :rtype: list of ? """
+    """ :rtype: list of :class:`.Entry` """
+
+    info = abc.abstractproperty(doc="information for consumers")
+    """ :rtype: dict of key/value pairs """

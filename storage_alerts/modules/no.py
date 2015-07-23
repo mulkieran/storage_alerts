@@ -31,10 +31,15 @@ class NoRecognizer(Recognizer):
 
     @property
     def state(self):
-        self # pylint: disable=pointless-statement
+        # pylint: disable=no-self-use
         return RecognizerStates.NO
 
     @property
     def evidence(self):
-        self # pylint: disable=pointless-statement
+        # pylint: disable=no-self-use
         return []
+
+    @property
+    def info(self):
+        # pylint: disable=no-self-use
+        return dict()

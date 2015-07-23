@@ -44,3 +44,8 @@ class HundredRecognizer(Recognizer):
     @property
     def evidence(self):
         return self._evidence
+
+    @property
+    def info(self):
+        # pylint: disable=no-self-use
+        return dict()
