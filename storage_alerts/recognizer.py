@@ -47,8 +47,12 @@ class RecognizerStates(object):
 class Recognizer(object):
     """ Abstract parent class of Recognizer classes.
 
-        A scanner may need to read multiple journal
+        A recognizer may need to read multiple journal
         entries before deciding whether it has found a match.
+
+        Once a recognizer has arrived at the YES conclusion it
+        no longer actually consumes entries or changes. It
+        should be taken out of service.
     """
 
     @abc.abstractmethod
@@ -68,6 +72,8 @@ class Recognizer(object):
             :rtype: :class:`.scanner.RecognizerState`
             :returns: a state indicating status of scanner
         """
+        if self.state == RecognizerStates.YES:
+            return self.state
         self._consume(entry)
         return self.state
 

@@ -36,7 +36,7 @@ class HundredRecognizer(Recognizer):
         l = len(self._evidence)
         if l == 0:
             return RecognizerStates.NO
-        if l >= 100:
+        if l == 100:
             return RecognizerStates.YES
         return RecognizerStates.MAYBE
 
