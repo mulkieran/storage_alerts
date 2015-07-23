@@ -20,7 +20,7 @@
 
 import datetime
 
-from .sources.journal import Scanner
+from .sources import journal
 
 class Journal(object):
     """ Handles high-level aspects of controlling journal scanning. """
@@ -40,7 +40,7 @@ class Journal(object):
 
             Updates start time when done.
         """
-        recognizers = Scanner.matches(
+        recognizers = journal.Scanner.matches(
            self._recognizers,
            self._start_time,
            None
