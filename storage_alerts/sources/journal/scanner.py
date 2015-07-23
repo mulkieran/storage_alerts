@@ -26,4 +26,12 @@ class Scanner(object):
 
     @staticmethod
     def matches(klasses, start, end=None):
+        """ Generate a sequence of recognizer matches.
+
+            :param klasses: a sequence of Recognizer classes
+            :type klasses: any sequence-like object
+            :param datetime start: start time
+            :param end: end time, may be None
+            :type end: datetime or NoneType
+        """
         return Reader().matches(RecognizerManager(klasses), start, end)
