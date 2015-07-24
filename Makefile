@@ -17,3 +17,6 @@ view:
 	mv classes_No_Name.pdf storage_alerts_sources.pdf
 	PYTHONPATH=. pyreverse --output=pdf storage_alerts/modules
 	mv classes_No_Name.pdf storage_alerts_modules.pdf
+
+doc-html:
+	cd doc; $(MAKE) clean html
