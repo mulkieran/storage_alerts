@@ -16,22 +16,15 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" For scanning the systemd journal for matches. """
+""" A module that prints a message to stdout for every alert. """
 
-from .manager import RecognizerManager
-from .reader import Reader
+from .handler import Handler
 
-class Scanner(object):
-    """ Reads and processes journal entries. """
+class PrintHandler(Handler):
+    """ Just prints a message about the alert to stdout. """
 
-    @staticmethod
-    def matches(klasses, start, end=None):
-        """ Generate a sequence of recognizer matches.
+    DEFAULT_MESSAGE = "No message available."
 
-            :param klasses: a sequence of Recognizer classes
-            :type klasses: any sequence-like object
-            :param datetime start: start time
-            :param end: end time, may be None
-            :type end: datetime or NoneType
-        """
-        return Reader().matches(RecognizerManager(klasses), start, end)
+    def doIt(self, info):
+        message = info.get('MESSAGE')
+        print("%s" % (message or self.DEFAULT_MESSAGE))

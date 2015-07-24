@@ -57,3 +57,6 @@ doc/tests
 
 # PyBuilder
 target/
+
+*.dot
+*.pdf

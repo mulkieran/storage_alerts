@@ -16,8 +16,25 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" An entry from the system journal. """
+""" Abstract Scanner class. """
 
-class Entry(object):
-    """ A journal entry. """
-    pass
+import abc
+
+from six import add_metaclass
+
+@add_metaclass(abc.ABCMeta)
+class Scanner(object):
+    """ Scans for recognizable alerts. """
+
+    @staticmethod
+    @abc.abstractmethod
+    def matches(klasses, start, end=None):
+        """ Generate a sequence of recognizer matches.
+
+            :param klasses: a sequence of Recognizer classes
+            :type klasses: any sequence-like object
+            :param datetime start: start time
+            :param end: end time, may be None
+            :type end: datetime or NoneType
+        """
+        raise NotImplementedError()

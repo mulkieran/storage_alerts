@@ -16,31 +16,35 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" Coordinates running of the whole thing. """
+""" Abstract classes for controlling scanning for alerts. """
 
 import datetime
 
-from . import controllers
-from . import examples
-from . import handlers
-from . import sources
+class FromTime(object):
+    """ Runs at intervals from previous time. """
 
-class Runner(object):
-    """ Runs the whole thing. """
+    def __init__(self, recognizers, start_time, klass):
+        """ Initializer.
 
-    def __init__(self):
-        recognizers = [
-            examples.journal.by_line.hundred.HundredRecognizer,
-            examples.journal.by_line.no.NoRecognizer,
-            examples.journal.by_line.yes.YesRecognizer
-        ]
-        self._journal = controllers.time.FromTime(
-           recognizers,
-           datetime.datetime.now(),
-           sources.journal.by_line.scanner.Scanner
+            :param recognizers: a sequence of Recognizer classes
+            :type recognizers: sequence of :class:`.sources.journal.Recognizer`
+            :param datetime start_time: from when to start next journal scan
+            :param class klass: a class, subtype of :class:`.scanner.Scanner`
+        """
+        self._start_time = start_time
+        self._recognizers = set(recognizers)
+        self._klass = klass
+
+    def matches(self):
+        """ Returns a list of matches using recognizers from start time.
+
+            Updates start time when done.
+        """
+        recognizers = self._klass.matches(
+           self._recognizers,
+           self._start_time,
+           None
         )
-        self._handler = handlers.simpleprint.PrintHandler()
-
-    def run(self):
-        for rec in self._journal.matches():
-            self._handler.doIt(rec.info)
+        for recognizer in recognizers:
+            yield recognizer
+        self._start_time = datetime.datetime.now()

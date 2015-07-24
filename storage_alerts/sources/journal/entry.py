@@ -16,31 +16,19 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" Coordinates running of the whole thing. """
+""" An entry from the system journal. """
 
-import datetime
+class Entry(object):
+    """ A journal entry.
 
-from . import controllers
-from . import examples
-from . import handlers
-from . import sources
+        Subclasses of this class can enforce validity requirements for entries.
+    """
 
-class Runner(object):
-    """ Runs the whole thing. """
+    def __init__(self, logentry):
+        """ Initializer.
 
-    def __init__(self):
-        recognizers = [
-            examples.journal.by_line.hundred.HundredRecognizer,
-            examples.journal.by_line.no.NoRecognizer,
-            examples.journal.by_line.yes.YesRecognizer
-        ]
-        self._journal = controllers.time.FromTime(
-           recognizers,
-           datetime.datetime.now(),
-           sources.journal.by_line.scanner.Scanner
-        )
-        self._handler = handlers.simpleprint.PrintHandler()
+            :param ? logentry: an entry from the journal log
+        """
+        self._fields = dict(logentry)
 
-    def run(self):
-        for rec in self._journal.matches():
-            self._handler.doIt(rec.info)
+    fields = property(lambda s: s._fields, doc="dict containing entry fields")

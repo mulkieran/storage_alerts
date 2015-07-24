@@ -16,16 +16,30 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A module that prints a message to stdout for every alert. """
+""" A module that does not recognize any alerts. """
 
-class PrintHandler(object):
+from storage_alerts.sources.journal.by_line import Recognizer
+from storage_alerts.sources.journal.by_line import RecognizerStates
 
-    DEFAULT_MESSAGE= "No message available."
+class NoRecognizer(Recognizer):
+    """ A recognizer that always says no. """
 
-    def doIt(info):
-        """ Handles the info in some manner.
+    description = "does not recognize any errors"
 
-            :param dict info: a dictionary of key/value pairs
-        """
-        message = info.get('MESSAGE')
-        print("%s" % message or self.DEFAULT_MESSAGE)
+    def _consume(self, entry):
+        pass
+
+    @property
+    def state(self):
+        # pylint: disable=no-self-use
+        return RecognizerStates.NO
+
+    @property
+    def evidence(self):
+        # pylint: disable=no-self-use
+        return []
+
+    @property
+    def info(self):
+        # pylint: disable=no-self-use
+        return dict()

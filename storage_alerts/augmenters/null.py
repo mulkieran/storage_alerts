@@ -16,31 +16,12 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" Coordinates running of the whole thing. """
+""" The null augmenter. """
 
-import datetime
+class NullAugmenter(object):
+    """ The augmenter that does nothing. """
 
-from . import controllers
-from . import examples
-from . import handlers
-from . import sources
-
-class Runner(object):
-    """ Runs the whole thing. """
-
-    def __init__(self):
-        recognizers = [
-            examples.journal.by_line.hundred.HundredRecognizer,
-            examples.journal.by_line.no.NoRecognizer,
-            examples.journal.by_line.yes.YesRecognizer
-        ]
-        self._journal = controllers.time.FromTime(
-           recognizers,
-           datetime.datetime.now(),
-           sources.journal.by_line.scanner.Scanner
-        )
-        self._handler = handlers.simpleprint.PrintHandler()
-
-    def run(self):
-        for rec in self._journal.matches():
-            self._handler.doIt(rec.info)
+    def augment(self, info):
+        # pylint: disable=unused-argument
+        # pylint: disable=no-self-use
+        return []

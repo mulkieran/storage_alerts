@@ -53,6 +53,9 @@ class Recognizer(object):
         Once a recognizer has arrived at the YES conclusion it
         no longer actually consumes entries or changes. It
         should be taken out of service.
+
+        The info property consists solely of information that
+        can be synthesized from the journal entries.
     """
 
     description = abc.abstractproperty(doc="brief description")

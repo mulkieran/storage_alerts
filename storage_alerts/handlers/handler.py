@@ -16,31 +16,21 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" Coordinates running of the whole thing. """
+""" An abstract handler class. """
 
-import datetime
+import abc
 
-from . import controllers
-from . import examples
-from . import handlers
-from . import sources
+from six import add_metaclass
 
-class Runner(object):
-    """ Runs the whole thing. """
+@add_metaclass(abc.ABCMeta)
+class Handler(object):
 
-    def __init__(self):
-        recognizers = [
-            examples.journal.by_line.hundred.HundredRecognizer,
-            examples.journal.by_line.no.NoRecognizer,
-            examples.journal.by_line.yes.YesRecognizer
-        ]
-        self._journal = controllers.time.FromTime(
-           recognizers,
-           datetime.datetime.now(),
-           sources.journal.by_line.scanner.Scanner
-        )
-        self._handler = handlers.simpleprint.PrintHandler()
+    DEFAULT_MESSAGE = abc.abstractproperty(doc="a default message")
 
-    def run(self):
-        for rec in self._journal.matches():
-            self._handler.doIt(rec.info)
+    @abc.abstractmethod
+    def doIt(self, info):
+        """ Handles the info in some manner.
+
+            :param dict info: a dictionary of key/value pairs
+        """
+        raise NotImplementedError()

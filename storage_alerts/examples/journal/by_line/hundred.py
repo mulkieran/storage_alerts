@@ -16,30 +16,38 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A module that does not recognize any alerts. """
+""" A module that interprets 100 journal entries as an error. """
 
-from storage_alerts.sources.journal import Recognizer
-from storage_alerts.sources.journal import RecognizerStates
+from storage_alerts.sources.journal.by_line import Recognizer
+from storage_alerts.sources.journal.by_line import RecognizerStates
 
-class NoRecognizer(Recognizer):
-    """ A recognizer that always says no. """
+class HundredRecognizer(Recognizer):
+    """ A recognizer that says yes after 100 messages. """
 
-    description = "does not recognize any errors"
+    description = "a hundred messages recognizer"
+
+    def __init__(self):
+        self._evidence = []
 
     def _consume(self, entry):
-        pass
+        self._evidence.append(entry)
 
     @property
     def state(self):
-        # pylint: disable=no-self-use
-        return RecognizerStates.NO
+        l = len(self._evidence)
+        if l == 0:
+            return RecognizerStates.NO
+        if l == 100:
+            return RecognizerStates.YES
+        return RecognizerStates.MAYBE
 
     @property
     def evidence(self):
-        # pylint: disable=no-self-use
-        return []
+        return self._evidence
 
     @property
     def info(self):
         # pylint: disable=no-self-use
-        return dict()
+        return {
+           'MESSAGE' : "There are 100 entries in the journal."
+        }

@@ -16,38 +16,17 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A module that interprets 100 journal entries as an error. """
+""" Little script to do some running. """
 
-from storage_alerts.sources.journal import Recognizer
-from storage_alerts.sources.journal import RecognizerStates
+import sys
 
-class HundredRecognizer(Recognizer):
-    """ A recognizer that says yes after 100 messages. """
+from storage_alerts.runner import Runner
 
-    description = "a hundred messages recognizer"
+def main():
+    runner = Runner()
+    while True:
+        raw_input("> ")
+        runner.run()
 
-    def __init__(self):
-        self._evidence = []
-
-    def _consume(self, entry):
-        self._evidence.append(entry)
-
-    @property
-    def state(self):
-        l = len(self._evidence)
-        if l == 0:
-            return RecognizerStates.NO
-        if l == 100:
-            return RecognizerStates.YES
-        return RecognizerStates.MAYBE
-
-    @property
-    def evidence(self):
-        return self._evidence
-
-    @property
-    def info(self):
-        # pylint: disable=no-self-use
-        return {
-           'MESSAGE' : "There are 100 entries in the journal."
-        }
+if __name__ == "__main__":
+    main()

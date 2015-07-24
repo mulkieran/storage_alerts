@@ -16,37 +16,23 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" For reading from the systemd journal. """
+""" For scanning the systemd journal for matches. """
+from .... import scanner
 
-class Reader(object):
+from .manager import RecognizerManager
+from .reader import Reader
+
+class Scanner(scanner.Scanner):
     """ Reads and processes journal entries. """
 
-    @classmethod
-    def _journalEntries(cls, start, end=None):
-        """ Generate a sequence of journal entries.
+    @staticmethod
+    def matches(klasses, start, end=None):
+        """ Generate a sequence of recognizer matches.
 
-            :param datetime time: start time
-            :param end: end time, if None, until present
+            :param klasses: a sequence of Recognizer classes
+            :type klasses: any sequence-like object
+            :param datetime start: start time
+            :param end: end time, may be None
             :type end: datetime or NoneType
         """
-        # pylint: disable=pointless-statement
-        start
-        end
-        cls
-        return []
-
-    @classmethod
-    def matches(cls, manager, start, end=None):
-        """ Process log entries from start to end.
-
-            :param manager: manager for scanner classes
-            :type manager: :class:`.manager.ScannerManager`
-            :param datetime time: start time
-            :param end: end time, if None, until present
-            :type end: datetime or NoneType
-
-            Generates a sequence of matching Scanner objects.
-        """
-        for entry in cls._journalEntries(start, end):
-            for scanner in manager.processEntry(entry):
-                yield scanner
+        return Reader().matches(RecognizerManager(klasses), start, end)

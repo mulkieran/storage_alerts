@@ -8,15 +8,19 @@ check:
 		--disable=duplicate-code \
 		--disable=invalid-name \
 		--disable=missing-docstring \
+		--disable=superfluous-parens \
 		--disable=too-few-public-methods
 
+PYREVERSE_OPTS = --output=pdf
 view:
 	PYTHONPATH=. pyreverse --output=pdf storage_alerts
 	mv classes_No_Name.pdf storage_alerts.pdf
+	PYTHONPATH=. pyreverse --output=pdf storage_alerts/examples
+	mv classes_No_Name.pdf storage_alerts_examples.pdf
+	PYTHONPATH=. pyreverse --output=pdf storage_alerts/handling
+	mv classes_No_Name.pdf storage_alerts_handling.pdf
 	PYTHONPATH=. pyreverse --output=pdf storage_alerts/sources
 	mv classes_No_Name.pdf storage_alerts_sources.pdf
-	PYTHONPATH=. pyreverse --output=pdf storage_alerts/modules
-	mv classes_No_Name.pdf storage_alerts_modules.pdf
 
 doc-html:
 	cd doc; $(MAKE) clean html
