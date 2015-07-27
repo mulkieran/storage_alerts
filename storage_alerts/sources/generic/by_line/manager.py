@@ -70,9 +70,9 @@ class RecognizerManager(object):
             scanner.consume(entry)
         yeses = [s for s in scanners if s.state == RecognizerStates.YES]
         self._scanners = [s for s in scanners if s.state == RecognizerStates.MAYBE]
-        self._cullRecognizers()
+        self._ejectRecognizers()
         return yeses
 
-    def _cullRecognizers(self):
+    def _ejectRecognizers(self):
         """ Remove scanners according to a scanner ejection policy. """
         pass
