@@ -22,7 +22,7 @@ import abc
 
 from six import add_metaclass
 
-from ...generic.by_line.manager import RecognizerStates
+from .states import RecognizerStates
 
 @add_metaclass(abc.ABCMeta)
 class Recognizer(object):

@@ -16,30 +16,19 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A module that does not recognize any alerts. """
+""" An entry from a journal of some sort. """
 
-from storage_alerts.sources.generic.by_line import Recognizer
-from storage_alerts.sources.generic.by_line import RecognizerStates
+class Entry(object):
+    """ A log entry of some sort.
 
-class NoRecognizer(Recognizer):
-    """ A recognizer that always says no. """
+        Subclasses of this class can enforce validity requirements for entries.
+    """
 
-    description = "does not recognize any errors"
+    def __init__(self, logentry):
+        """ Initializer.
 
-    def _consume(self, entry):
-        pass
+            :param ? logentry: an entry from some log
+        """
+        self._fields = dict(logentry)
 
-    @property
-    def state(self):
-        # pylint: disable=no-self-use
-        return RecognizerStates.NO
-
-    @property
-    def evidence(self):
-        # pylint: disable=no-self-use
-        return []
-
-    @property
-    def info(self):
-        # pylint: disable=no-self-use
-        return dict()
+    fields = property(lambda s: s._fields, doc="dict containing entry fields")

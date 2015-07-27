@@ -18,8 +18,8 @@
 
 """ A module that interprets 100 journal entries as an error. """
 
-from storage_alerts.sources.journal.by_line import Recognizer
-from storage_alerts.sources.journal.by_line import RecognizerStates
+from storage_alerts.sources.generic.by_line import Recognizer
+from storage_alerts.sources.generic.by_line import RecognizerStates
 
 class HundredRecognizer(Recognizer):
     """ A recognizer that says yes after 100 messages. """

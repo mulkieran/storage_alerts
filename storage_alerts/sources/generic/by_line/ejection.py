@@ -16,30 +16,40 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A module that does not recognize any alerts. """
+""" Policies for ejecting recognizers. """
 
-from storage_alerts.sources.generic.by_line import Recognizer
-from storage_alerts.sources.generic.by_line import RecognizerStates
+import abc
 
-class NoRecognizer(Recognizer):
-    """ A recognizer that always says no. """
+from six import add_metaclass
 
-    description = "does not recognize any errors"
+@add_metaclass(abc.ABCMeta)
+class EjectionPolicy(object):
 
-    def _consume(self, entry):
-        pass
+    @staticmethod
+    @abc.abstractmethod
+    def filtered(scanners):
+        """ Filter all scanners that are newer and of the same type.
 
-    @property
-    def state(self):
-        # pylint: disable=no-self-use
-        return RecognizerStates.NO
+            :param scanners: a sequence of recognizers
+            :type scanners: list of :class:`.recognizer.Recognizer` objects
 
-    @property
-    def evidence(self):
-        # pylint: disable=no-self-use
-        return []
+            Generates a sequence of recognizer objects.
+        """
+        raise NotImplementedError()
 
-    @property
-    def info(self):
-        # pylint: disable=no-self-use
-        return dict()
+class NewerDuplicates(EjectionPolicy):
+    """ Eject any recognizer that has the same type, but is newer.
+
+        Precondition: list of scanners is in order from older to newer
+    """
+
+    @staticmethod
+    def filtered(scanners):
+        types = dict()
+        for s in scanners:
+            t = type(s)
+            if t in types:
+                pass
+            else:
+                types[t] = None
+                yield s

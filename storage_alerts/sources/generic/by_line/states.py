@@ -16,30 +16,25 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A module that does not recognize any alerts. """
+""" States of a line-by-line recognizer. """
 
-from storage_alerts.sources.generic.by_line import Recognizer
-from storage_alerts.sources.generic.by_line import RecognizerStates
+class RecognizerState(object):
+    """ Class for defining enumeration of states of a scanner. """
 
-class NoRecognizer(Recognizer):
-    """ A recognizer that always says no. """
+    def __init__(self, desc):
+        """ Initializer.
 
-    description = "does not recognize any errors"
+            :param str desc: meaning of scanner state
+        """
+        self._desc = desc
 
-    def _consume(self, entry):
-        pass
+    def __str__(self):
+        return self._desc
+    __repr__ = __str__
 
-    @property
-    def state(self):
-        # pylint: disable=no-self-use
-        return RecognizerStates.NO
+class RecognizerStates(object):
+    """ Organizes all allowed states of a scanner object. """
 
-    @property
-    def evidence(self):
-        # pylint: disable=no-self-use
-        return []
-
-    @property
-    def info(self):
-        # pylint: disable=no-self-use
-        return dict()
+    MAYBE = RecognizerState("May be in the process of recognizing the error.")
+    YES = RecognizerState("The error has been recognized.")
+    NO = RecognizerState("The entry just read does not indicate the error.")

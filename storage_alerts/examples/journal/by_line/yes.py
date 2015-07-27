@@ -18,8 +18,8 @@
 
 """ A module that panics for every journal entry. """
 
-from storage_alerts.sources.journal.by_line import Recognizer
-from storage_alerts.sources.journal.by_line import RecognizerStates
+from storage_alerts.sources.generic.by_line import Recognizer
+from storage_alerts.sources.generic.by_line import RecognizerStates
 
 class YesRecognizer(Recognizer):
     """ A recognizer that always says yes. """

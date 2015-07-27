@@ -18,17 +18,11 @@
 
 """ An entry from the system journal. """
 
-class Entry(object):
+from .. import generic
+
+class Entry(generic.entry.Entry):
     """ A journal entry.
 
         Subclasses of this class can enforce validity requirements for entries.
     """
-
-    def __init__(self, logentry):
-        """ Initializer.
-
-            :param ? logentry: an entry from the journal log
-        """
-        self._fields = dict(logentry)
-
-    fields = property(lambda s: s._fields, doc="dict containing entry fields")
+    pass

@@ -1,5 +1,3 @@
-""" Module for scanning some sources of alerts.
+""" Module for scanning some sources of alerts. """
 
-    Subpackages:
-     * journal - for interpreting entries in the journal
-"""
+from . import journal

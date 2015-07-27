@@ -1,1 +1,3 @@
-""" Modules and classes useful for line-by-line reading. """
+""" Generic modules and classes for log reading. """
+
+from . import entry

@@ -18,26 +18,9 @@
 
 """ For managing  objects. """
 
-class RecognizerState(object):
-    """ Class for defining enumeration of states of a scanner. """
+import functools
 
-    def __init__(self, desc):
-        """ Initializer.
-
-            :param str desc: meaning of scanner state
-        """
-        self._desc = desc
-
-    def __str__(self):
-        return self._desc
-    __repr__ = __str__
-
-class RecognizerStates(object):
-    """ Organizes all allowed states of a scanner object. """
-
-    MAYBE = RecognizerState("May be in the process of recognizing the error.")
-    YES = RecognizerState("The error has been recognized.")
-    NO = RecognizerState("The entry just read does not indicate the error.")
+from .states import RecognizerStates
 
 class RecognizerManager(object):
     """ Maintains a set of Recognizer classes. """
@@ -53,6 +36,7 @@ class RecognizerManager(object):
             :type klasses: any sequence-like object
         """
         self._scanners = []
+        self._filters = []
         self._klasses = set(klasses)
 
     def processEntry(self, entry):
@@ -75,4 +59,8 @@ class RecognizerManager(object):
 
     def _ejectRecognizers(self):
         """ Remove scanners according to a scanner ejection policy. """
-        pass
+        self._scanners = functools.reduce(
+           lambda f, s: f.filtered(s),
+           self._filters,
+           self._scanners
+        )
