@@ -1,3 +1,5 @@
+SUBDIRS = augmenters controllers examples handlers sources
+
 check:
 	pylint storage_alerts tests \
 		--reports=no \
@@ -13,14 +15,20 @@ check:
 
 PYREVERSE_OPTS = --output=pdf
 view:
-	PYTHONPATH=. pyreverse --output=pdf storage_alerts
-	mv classes_No_Name.pdf storage_alerts.pdf
-	PYTHONPATH=. pyreverse --output=pdf storage_alerts/examples
-	mv classes_No_Name.pdf storage_alerts_examples.pdf
-	PYTHONPATH=. pyreverse --output=pdf storage_alerts/handling
-	mv classes_No_Name.pdf storage_alerts_handling.pdf
-	PYTHONPATH=. pyreverse --output=pdf storage_alerts/sources
-	mv classes_No_Name.pdf storage_alerts_sources.pdf
+	-rm -Rf _pyreverse
+	mkdir _pyreverse
+	PYTHONPATH=. pyreverse ${PYREVERSE_OPTS} --project="storage_alerts" storage_alerts
+	mv classes_storage_alerts.pdf _pyreverse
+	mv packages_storage_alerts.pdf _pyreverse
+	for s in ${SUBDIRS}; \
+	do \
+		PYTHONPATH=. pyreverse ${PYREVERSE_OPTS} --project="$${s}" storage_alerts/"$${s}"; \
+		mv classes_"$${s}".pdf _pyreverse; \
+		mv packages_"$${s}".pdf _pyreverse; \
+	done
 
 doc-html:
 	cd doc; $(MAKE) clean html
+
+clean:
+	-rm -Rf _pyreverse
