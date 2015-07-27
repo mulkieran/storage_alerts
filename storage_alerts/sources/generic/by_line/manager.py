@@ -18,7 +18,26 @@
 
 """ For managing  objects. """
 
-from .recognizer import RecognizerStates
+class RecognizerState(object):
+    """ Class for defining enumeration of states of a scanner. """
+
+    def __init__(self, desc):
+        """ Initializer.
+
+            :param str desc: meaning of scanner state
+        """
+        self._desc = desc
+
+    def __str__(self):
+        return self._desc
+    __repr__ = __str__
+
+class RecognizerStates(object):
+    """ Organizes all allowed states of a scanner object. """
+
+    MAYBE = RecognizerState("May be in the process of recognizing the error.")
+    YES = RecognizerState("The error has been recognized.")
+    NO = RecognizerState("The entry just read does not indicate the error.")
 
 class RecognizerManager(object):
     """ Maintains a set of Recognizer classes. """

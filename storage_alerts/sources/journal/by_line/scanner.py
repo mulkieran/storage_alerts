@@ -19,7 +19,8 @@
 """ For scanning the systemd journal for matches. """
 from .... import scanner
 
-from .manager import RecognizerManager
+from ...generic.by_line.manager import RecognizerManager
+
 from .reader import Reader
 
 class Scanner(scanner.Scanner):
