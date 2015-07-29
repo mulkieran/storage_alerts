@@ -16,35 +16,39 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" Coordinates running of the whole thing. """
+""" A module that interprets any python process as an error. """
 
-import datetime
+from storage_alerts.sources.generic.by_line import Recognizer
+from storage_alerts.sources.generic.by_line import RecognizerStates
 
-from . import controllers
-from . import examples
-from . import handlers
-from . import sources
+class PythonRecognizer(Recognizer):
+    """ A recognizer that says yes after a message from a python process. """
 
-class Runner(object):
-    """ Runs the whole thing. """
+    description = "a python process recognizer"
 
     def __init__(self):
-        recognizers = [
-            examples.journal.by_line.hundred.HundredRecognizer,
-            examples.journal.by_line.python.PythonRecognizer,
-            examples.journal.by_line.no.NoRecognizer,
-            examples.journal.by_line.yes.YesRecognizer
-        ]
-        self._journal = controllers.time.FromTime(
-           recognizers,
-           datetime.datetime.now(),
-           sources.generic.scanner.LogScanner(
-              sources.journal.by_line.Reader(),
-              sources.generic.by_line.RecognizerManager(recognizers)
-           )
-        )
-        self._handler = handlers.simpleprint.PrintHandler()
+        self._evidence = []
 
-    def run(self):
-        for rec in self._journal.matches():
-            self._handler.doIt(rec.info)
+    def _consume(self, entry):
+        self._evidence = []
+        comm = entry.fields.get("_COMM")
+        if comm == "python":
+            self._evidence = [entry]
+
+    @property
+    def state(self):
+        if self._evidence:
+            return RecognizerStates.YES
+        else:
+            return RecognizerStates.NO
+
+    @property
+    def evidence(self):
+        return self._evidence
+
+    @property
+    def info(self):
+        # pylint: disable=no-self-use
+        return {
+           'MESSAGE' : "Detected a python process."
+        }
