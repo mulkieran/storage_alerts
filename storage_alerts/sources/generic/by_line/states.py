@@ -18,7 +18,7 @@
 
 """ States of a line-by-line recognizer. """
 
-class RecognizerState(object):
+class _RecognizerState(object):
     """ Class for defining enumeration of states of a scanner. """
 
     def __init__(self, desc):
@@ -35,6 +35,6 @@ class RecognizerState(object):
 class RecognizerStates(object):
     """ Organizes all allowed states of a scanner object. """
 
-    MAYBE = RecognizerState("May be in the process of recognizing the error.")
-    YES = RecognizerState("The error has been recognized.")
-    NO = RecognizerState("The entry just read does not indicate the error.")
+    MAYBE = _RecognizerState("May be in the process of recognizing the error.")
+    YES = _RecognizerState("The error has been recognized.")
+    NO = _RecognizerState("The entry just read does not indicate the error.")
