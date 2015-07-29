@@ -19,6 +19,7 @@
 """ Coordinates running of the whole thing. """
 
 import datetime
+import logging
 
 from . import controllers
 from . import examples
@@ -28,19 +29,22 @@ from . import sources
 class Runner(object):
     """ Runs the whole thing. """
 
-    def __init__(self):
+    def __init__(self, log_level=logging.DEBUG):
+        logging.basicConfig(filename="storage_alerts.log", level=log_level)
         recognizers = [
             examples.journal.by_line.hundred.HundredRecognizer,
             examples.journal.by_line.python.PythonRecognizer,
             examples.journal.by_line.no.NoRecognizer,
             examples.journal.by_line.yes.YesRecognizer
         ]
+        filters = [sources.generic.by_line.NewerDuplicates]
+
         self._journal = controllers.time.FromTime(
            recognizers,
            datetime.datetime.now(),
            sources.generic.scanner.LogScanner(
               sources.journal.by_line.Reader(),
-              sources.generic.by_line.RecognizerManager(recognizers)
+              sources.generic.by_line.RecognizerManager(recognizers, filters)
            )
         )
         self._handler = handlers.simpleprint.PrintHandler()

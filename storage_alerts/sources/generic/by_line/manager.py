@@ -19,6 +19,7 @@
 """ For managing  objects. """
 
 import functools
+import logging
 
 from .states import RecognizerStates
 
@@ -29,15 +30,25 @@ class RecognizerManager(object):
     #     * all scanner objects in self._scanners are in MAYBE state
     #     * there are no duplicate classes in self._klasses
 
-    def __init__(self, klasses):
+    def __init__(self, klasses, filters):
         """ Initializer.
 
             :param klasses: list of Recognizer classes
             :type klasses: any sequence-like object
+            :param list filters: a list of EjectionPolicy objects
         """
         self._scanners = []
-        self._filters = []
+        self._filters = filters
         self._klasses = set(klasses)
+
+    def _scannersStr(self, scanners):
+        """ Returns a str representation of a list of scanners.
+
+            :param list scanners: a list of Recognizers
+            :rtype: str
+        """
+        # pylint: disable=no-self-use
+        return ", ".join(str(s) for s in scanners)
 
     def processEntry(self, entry):
         """ Process a journal entry.
@@ -55,12 +66,14 @@ class RecognizerManager(object):
         yeses = [s for s in scanners if s.state == RecognizerStates.YES]
         self._scanners = [s for s in scanners if s.state == RecognizerStates.MAYBE]
         self._ejectRecognizers()
+        logging.debug(self._scannersStr(self._scanners))
         return yeses
 
     def _ejectRecognizers(self):
         """ Remove scanners according to a scanner ejection policy. """
-        self._scanners = functools.reduce(
-           lambda f, s: f.filtered(s),
+        scanners = functools.reduce(
+           lambda s, f: f.filtered(s),
            self._filters,
            self._scanners
         )
+        self._scanners = list(scanners)
