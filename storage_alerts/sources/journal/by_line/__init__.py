@@ -13,4 +13,4 @@
 """
 
 from ..entry import Entry
-from .scanner import Scanner
+from .reader import Reader

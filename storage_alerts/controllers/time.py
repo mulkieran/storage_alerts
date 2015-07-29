@@ -40,11 +40,7 @@ class FromTime(object):
 
             Updates start time when done.
         """
-        recognizers = self._klass.matches(
-           self._recognizers,
-           self._start_time,
-           None
-        )
+        recognizers = self._klass.matches(self._start_time, None)
         for recognizer in recognizers:
             yield recognizer
         self._start_time = datetime.datetime.now()

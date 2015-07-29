@@ -16,25 +16,25 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" Abstract Scanner class. """
+""" Scanner classes. """
 
-import abc
+class LogScanner(object):
+    """ Scans for recognizable alerts in a log. """
 
-from six import add_metaclass
+    def __init__(self, reader, manager):
+        """ Initializer.
 
-@add_metaclass(abc.ABCMeta)
-class Scanner(object):
-    """ Scans for recognizable alerts. """
+            :param Reader reader: a reader object for the log
+            :param Manager manager: a manager for recognizers
+        """
+        self._reader = reader
+        self._manager = manager
 
-    @staticmethod
-    @abc.abstractmethod
-    def matches(klasses, start, end=None):
+    def matches(self, start, end=None):
         """ Generate a sequence of recognizer matches.
 
-            :param klasses: a sequence of Recognizer classes
-            :type klasses: any sequence-like object
             :param datetime start: start time
             :param end: end time, may be None
             :type end: datetime or NoneType
         """
-        raise NotImplementedError()
+        return self._reader.matches(self._manager, start, end)
