@@ -23,7 +23,6 @@ import datetime
 from . import controllers
 from . import examples
 from . import handlers
-from . import scanner
 from . import sources
 
 class Runner(object):
@@ -38,7 +37,7 @@ class Runner(object):
         self._journal = controllers.time.FromTime(
            recognizers,
            datetime.datetime.now(),
-           scanner.LogScanner(
+           sources.generic.scanner.LogScanner(
               sources.journal.by_line.Reader(),
               sources.generic.by_line.RecognizerManager(recognizers)
            )
