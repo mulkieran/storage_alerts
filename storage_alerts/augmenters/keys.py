@@ -16,24 +16,38 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" Abstract classes for augmenting information obtained by recognizers. """
+""" Key factory for info keys. """
 
-import abc
+from collections import defaultdict
 
-from six import add_metaclass
+class Key(object):
+    """ A key object. """
 
-@add_metaclass(abc.ABCMeta)
-class Augmenter(object):
-    """ Abstract class for augmenting info from recognizer. """
+    def __init__(self, name, owner):
+        """ Initializer.
 
-    KEY_NAMES = abc.abstractproperty("names of keys that might be set")
-
-    @abc.abstractmethod
-    def augment(self, info):
-        """ Augments info param with additional fields.
-
-            :param dict info: a dict of key/value pairs
-            :returns: a list of keys added
-            :rtype: list of :class:`.keys.Key`
+            :param str name: name of key
+            :param class owner: key owner
         """
-        raise NotImplementedError()
+        self._name = name
+        self._owner = owner
+
+class KeyFactory(object):
+    """ Stores keys belonging to different augmenters. """
+
+    def __init__(self):
+        self._keys = defaultdict(dict)
+
+    def getKey(self, name, owner):
+        """ Obtain a key from the factory.
+
+            :param str name: the key name
+            :param Augmenter owner: the owner of the key
+
+            Constructs a new key if none exists.
+        """
+        owner_dict = self._keys[type(owner)]
+        key = owner_dict.get(name)
+        if key is None:
+            owner_dict[name] = Key(name, type(owner))
+        return owner_dict.get(name)
