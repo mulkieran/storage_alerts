@@ -5,6 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXAPIDOC  = sphinx-apidoc
+SPHINXAPIOPTS = --private --separate
 PAPER         =
 BUILDDIR      = _build
 SOURCEDIR     = ../storage_alerts
@@ -54,8 +55,8 @@ clean:
 	-rm -rf ./tests
 
 apidoc:
-	$(SPHINXAPIDOC) -o ./storage_alerts $(SOURCEDIR)
-	$(SPHINXAPIDOC) -o ./tests $(TESTDIR)
+	$(SPHINXAPIDOC) $(SPHINXAPIOPTS) -o ./storage_alerts $(SOURCEDIR)
+	$(SPHINXAPIDOC) $(SPHINXAPIOPTS) -o ./tests $(TESTDIR)
 
 html: apidoc
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
