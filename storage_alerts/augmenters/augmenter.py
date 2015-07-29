@@ -34,6 +34,6 @@ class Augmenter(object):
 
             :param dict info: a dict of key/value pairs
             :returns: a list of keys added
-            :rtype: list of :class:`.keys.Key`
+            :rtype: list of :class:`..keys.Key`
         """
         raise NotImplementedError()
