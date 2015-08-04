@@ -16,15 +16,22 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" An entry from a journal of some sort. """
-import abc
+""" Test for managers. """
+import unittest
 
-from six import add_metaclass
+from storage_alerts.sources.generic.by_line.ejection import NoneEjector
+from storage_alerts.sources.generic.by_line.manager import RecognizerManager
+from storage_alerts.sources.generic.by_line.recognizers import YesRecognizer
 
-@add_metaclass(abc.ABCMeta)
-class Entry(object):
-    """ A log entry of some sort.
+class ManagerTestCase(unittest.TestCase):
+    """ Test a manager. """
 
-        Subclasses of this class can enforce validity requirements for entries.
-    """
-    fields = abc.abstractproperty(doc="dict containing entry fields")
+    def testEmpty(self):
+        """ Test that an entry w/out any recognizers is correctly processed. """
+        manager = RecognizerManager([], NoneEjector)
+        self.assertEqual(manager.processEntry(None), [])
+
+    def testYes(self):
+        """ Test with an always true recognizer. """
+        manager = RecognizerManager([YesRecognizer], NoneEjector)
+        self.assertEqual(len(manager.processEntry(None)), 1)

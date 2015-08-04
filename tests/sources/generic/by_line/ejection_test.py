@@ -16,15 +16,29 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" An entry from a journal of some sort. """
-import abc
+""" Test for ejection policies. """
+import unittest
 
-from six import add_metaclass
+from storage_alerts.sources.generic.by_line.ejection import EjectionPolicy
+from storage_alerts.sources.generic.by_line.ejection import NewerDuplicates
 
-@add_metaclass(abc.ABCMeta)
-class Entry(object):
-    """ A log entry of some sort.
+class AbstractParentTestCase(unittest.TestCase):
+    """ Test that abstract parent does not do anything. """
 
-        Subclasses of this class can enforce validity requirements for entries.
-    """
-    fields = abc.abstractproperty(doc="dict containing entry fields")
+    def testInvocation(self):
+        """ Abstract parent does not filter. """
+        with self.assertRaises(NotImplementedError):
+            EjectionPolicy.filtered([])
+
+class NewerDuplicatesTestCase(unittest.TestCase):
+    """ Test ejection of newer duplicates. """
+
+    def testEjection(self):
+        """ Test that appropriate scanners are ejected. """
+        scanners = [1, 2, 3, "a", "b", "c", 4]
+        self.assertEqual(list(NewerDuplicates.filtered(scanners)), [1, "a"])
+
+    def testEmpty(self):
+        """ Test that empty list is handled correctly. """
+        scanners = []
+        self.assertEqual(list(NewerDuplicates.filtered(scanners)), [])

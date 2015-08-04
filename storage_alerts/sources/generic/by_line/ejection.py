@@ -37,6 +37,13 @@ class EjectionPolicy(object):
         """
         raise NotImplementedError()
 
+class NoneEjector(EjectionPolicy):
+    """ Ejector that never ejects. """
+
+    @staticmethod
+    def filtered(scanners):
+        return scanners
+
 class NewerDuplicates(EjectionPolicy):
     """ Eject any recognizer that has the same type, but is newer.
 

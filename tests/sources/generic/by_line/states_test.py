@@ -16,15 +16,13 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" An entry from a journal of some sort. """
-import abc
+""" Test for managers. """
+import unittest
 
-from six import add_metaclass
+from storage_alerts.sources.generic.by_line.states import RecognizerStates
 
-@add_metaclass(abc.ABCMeta)
-class Entry(object):
-    """ A log entry of some sort.
+class StatesTestCase(unittest.TestCase):
+    """ Exercise states methods. """
 
-        Subclasses of this class can enforce validity requirements for entries.
-    """
-    fields = abc.abstractproperty(doc="dict containing entry fields")
+    def testStr(self):
+        self.assertIsNotNone(str(RecognizerStates.MAYBE))

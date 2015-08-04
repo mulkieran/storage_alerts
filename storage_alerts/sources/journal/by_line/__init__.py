@@ -14,3 +14,4 @@
 
 from ..entry import Entry
 from .reader import Reader
+from .recognizers import ProcessRecognizer
