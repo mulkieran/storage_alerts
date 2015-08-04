@@ -20,7 +20,7 @@
 
 import sys
 
-from storage_alerts.runner import Runner
+from storage_alerts import Runner
 
 def main():
     runner = Runner()
