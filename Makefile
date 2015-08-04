@@ -32,3 +32,11 @@ doc-html:
 
 clean:
 	-rm -Rf _pyreverse
+
+test:
+	PYTHONPATH=.:tests/ python -m unittest discover -v -s tests/ -p '*_test.py'
+
+coverage:
+	PYTHONPATH=.:tests/ coverage run --timid --branch -m unittest discover -v -s tests/ -p '*_test.py'
+	coverage report --include="storage_alerts/*"
+	coverage html --include="storage_alerts/*"
