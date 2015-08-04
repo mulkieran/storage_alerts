@@ -1,4 +1,4 @@
-SUBDIRS = augmenters controllers examples handlers sources
+SUBDIRS = augmenters controllers handlers sources
 
 check:
 	pylint storage_alerts tests \

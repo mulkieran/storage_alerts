@@ -16,30 +16,48 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A module that does not recognize any alerts. """
+""" A module with a couple of recognizers in it. """
 
-from storage_alerts.sources.generic.by_line import Recognizer
-from storage_alerts.sources.generic.by_line import RecognizerStates
+from ...generic.by_line.recognizer import Recognizer
+from ...generic.by_line.states import RecognizerStates
 
-class NoRecognizer(Recognizer):
-    """ A recognizer that always says no. """
+class ProcessRecognizer(Recognizer):
+    """ A recognizer that says yes after a message from a specified process. """
 
-    description = "does not recognize any errors"
+    description = "a process recognizer"
+
+    def __init__(self, process):
+        """ Initializer.
+
+            :param str process: name of process
+        """
+        self._process = process
+        self._evidence = []
 
     def _consume(self, entry):
-        pass
+        """ Consumes a journal entry.
+
+            :param :class:`..entry.Entry` entry: a journal entry
+        """
+        self._evidence = []
+        comm = entry.fields.get("_COMM")
+        if comm == self._process:
+            self._evidence = [entry]
 
     @property
     def state(self):
-        # pylint: disable=no-self-use
-        return RecognizerStates.NO
+        if self._evidence:
+            return RecognizerStates.YES
+        else:
+            return RecognizerStates.NO
 
     @property
     def evidence(self):
-        # pylint: disable=no-self-use
-        return []
+        return self._evidence
 
     @property
     def info(self):
         # pylint: disable=no-self-use
-        return dict()
+        return {
+           'MESSAGE' : "Detected a %s process." % self._process
+        }

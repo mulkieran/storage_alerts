@@ -16,10 +16,10 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A module that panics for every journal entry. """
+""" A module with a couple of recognizers in it. """
 
-from storage_alerts.sources.generic.by_line import Recognizer
-from storage_alerts.sources.generic.by_line import RecognizerStates
+from .recognizer import Recognizer
+from .states import RecognizerStates
 
 class YesRecognizer(Recognizer):
     """ A recognizer that always says yes. """
@@ -45,4 +45,63 @@ class YesRecognizer(Recognizer):
         # pylint: disable=no-self-use
         return {
            'MESSAGE': "There is a message in the journal."
+        }
+
+class NoRecognizer(Recognizer):
+    """ A recognizer that always says no. """
+
+    description = "does not recognize any errors"
+
+    def _consume(self, entry):
+        pass
+
+    @property
+    def state(self):
+        # pylint: disable=no-self-use
+        return RecognizerStates.NO
+
+    @property
+    def evidence(self):
+        # pylint: disable=no-self-use
+        return []
+
+    @property
+    def info(self):
+        # pylint: disable=no-self-use
+        return dict()
+
+class ManyRecognizer(Recognizer):
+    """ A recognizer that says yes after a designated number of messages. """
+
+    description = "a lot of messages recognizer"
+
+    def __init__(self, number):
+        """ Initializer.
+
+            :param int number: number of messages that indicates a problem
+        """
+        self._number = number
+        self._evidence = []
+
+    def _consume(self, entry):
+        self._evidence.append(entry)
+
+    @property
+    def state(self):
+        l = len(self._evidence)
+        if l == 0:
+            return RecognizerStates.NO
+        if l == self._number:
+            return RecognizerStates.YES
+        return RecognizerStates.MAYBE
+
+    @property
+    def evidence(self):
+        return self._evidence
+
+    @property
+    def info(self):
+        # pylint: disable=no-self-use
+        return {
+           'MESSAGE' : "There are %s entries." % self._number
         }

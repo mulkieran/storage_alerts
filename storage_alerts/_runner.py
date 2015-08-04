@@ -22,7 +22,6 @@ import datetime
 import logging
 
 from . import controllers
-from . import examples
 from . import handlers
 from . import sources
 
@@ -32,10 +31,10 @@ class Runner(object):
     def __init__(self, log_level=logging.DEBUG):
         logging.basicConfig(filename="storage_alerts.log", level=log_level)
         recognizers = [
-            examples.journal.by_line.hundred.HundredRecognizer,
-            examples.journal.by_line.python.PythonRecognizer,
-            examples.journal.by_line.no.NoRecognizer,
-            examples.journal.by_line.yes.YesRecognizer
+            sources.generic.by_line.recognizers.ManyRecognizer,
+            sources.journal.by_line.recognizers.ProcessRecognizer,
+            sources.generic.by_line.recognizers.NoRecognizer,
+            sources.generic.by_line.recognizers.YesRecognizer
         ]
         filters = [sources.generic.by_line.NewerDuplicates]
 
