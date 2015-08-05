@@ -43,9 +43,7 @@ class YesRecognizer(Recognizer):
     @property
     def info(self):
         # pylint: disable=no-self-use
-        return {
-           'MESSAGE': "There is a message in the journal."
-        }
+        return dict()
 
 class NoRecognizer(Recognizer):
     """ A recognizer that always says no. """
@@ -89,10 +87,10 @@ class ManyRecognizer(Recognizer):
     @property
     def state(self):
         l = len(self._evidence)
-        if l == 0:
-            return RecognizerStates.NO
         if l == self._number:
             return RecognizerStates.YES
+        if l == 0:
+            return RecognizerStates.NO
         return RecognizerStates.MAYBE
 
     @property
@@ -101,7 +99,7 @@ class ManyRecognizer(Recognizer):
 
     @property
     def info(self):
-        # pylint: disable=no-self-use
         return {
-           'MESSAGE' : "There are %s entries." % self._number
+           'COUNT': len(self._evidence),
+           'REQUIRED' : self._number
         }
