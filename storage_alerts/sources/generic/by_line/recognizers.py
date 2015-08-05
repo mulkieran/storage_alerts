@@ -91,7 +91,7 @@ class ManyRecognizer(Recognizer):
             return RecognizerStates.YES
         if l == 0:
             return RecognizerStates.NO
-        return RecognizerStates.MAYBE
+        return RecognizerStates.MAYBE_NO
 
     @property
     def evidence(self):

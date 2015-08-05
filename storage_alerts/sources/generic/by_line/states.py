@@ -35,6 +35,13 @@ class _RecognizerState(object):
 class RecognizerStates(object):
     """ Organizes all allowed states of a scanner object. """
 
-    MAYBE = _RecognizerState("May be in the process of recognizing the error.")
+    MAYBE_NO = _RecognizerState(
+       "May be in the process of recognizing the error."
+    )
+    MAYBE_YES = _RecognizerState(
+        "Has recognized an error which may be invalidated."
+    )
     YES = _RecognizerState("The error has been recognized.")
     NO = _RecognizerState("The entry just read does not indicate the error.")
+
+    MAYBE_STATES = (MAYBE_NO, MAYBE_YES)

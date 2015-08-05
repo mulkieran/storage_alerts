@@ -89,7 +89,7 @@ class ManyRecognizerTestCase(unittest.TestCase):
         rec = ManyRecognizer(2)
         self.assertEqual(rec.state, RecognizerStates.NO)
         rec.consume(None)
-        self.assertEqual(rec.state, RecognizerStates.MAYBE)
+        self.assertEqual(rec.state, RecognizerStates.MAYBE_NO)
         self.assertEqual(len(rec.evidence), 1)
         rec.consume(None)
         self.assertEqual(rec.state, RecognizerStates.YES)

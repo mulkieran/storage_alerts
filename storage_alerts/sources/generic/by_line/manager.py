@@ -26,7 +26,7 @@ class RecognizerManager(object):
     """ Maintains a set of Recognizer classes. """
 
     #    Invariants:
-    #     * all scanner objects in self._scanners are in MAYBE state
+    #     * all scanner objects in self._scanners are in MAYBE states
     #     * there are no duplicate classes in self._klasses
 
     def __init__(self, klasses, ejector):
@@ -56,14 +56,14 @@ class RecognizerManager(object):
             :returns: a list of matching objects, may be empty
             :rtype: list of :class:`.scanner.Recognizer`
 
-            Use all current scanners, which all have state MAYBE, and also
+            Use all current scanners, which all have state MAYBE_*, and also
             instantiates new objects for every registered scanner class.
         """
         scanners = self._scanners + [c() for c in self._klasses]
         for scanner in scanners:
             scanner.consume(entry)
         yeses = [s for s in scanners if s.state == RecognizerStates.YES]
-        self._scanners = [s for s in scanners if s.state == RecognizerStates.MAYBE]
+        self._scanners = [s for s in scanners if s.state in (RecognizerStates.MAYBE_STATES)]
         self._ejectRecognizers()
         logging.debug(self._scannersStr(self._scanners))
         return yeses
