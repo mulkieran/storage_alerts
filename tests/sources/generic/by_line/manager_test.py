@@ -21,6 +21,7 @@ import unittest
 
 from storage_alerts.sources.generic.by_line.ejection import NoneEjector
 from storage_alerts.sources.generic.by_line.manager import RecognizerManager
+from storage_alerts.sources.generic.by_line.recognizers import LazyRecognizer
 from storage_alerts.sources.generic.by_line.recognizers import YesRecognizer
 
 class ManagerTestCase(unittest.TestCase):
@@ -30,8 +31,16 @@ class ManagerTestCase(unittest.TestCase):
         """ Test that an entry w/out any recognizers is correctly processed. """
         manager = RecognizerManager([], NoneEjector)
         self.assertEqual(manager.processEntry(None), [])
+        self.assertEqual(len(manager.unrefuted()), 0)
 
     def testYes(self):
         """ Test with an always true recognizer. """
         manager = RecognizerManager([YesRecognizer], NoneEjector)
         self.assertEqual(len(manager.processEntry(None)), 1)
+        self.assertEqual(len(manager.unrefuted()), 0)
+
+    def testLazy(self):
+        """ Test with a lazy recognizer. """
+        manager = RecognizerManager([LazyRecognizer], NoneEjector)
+        self.assertEqual(len(manager.processEntry(None)), 0)
+        self.assertEqual(len(manager.unrefuted()), 1)

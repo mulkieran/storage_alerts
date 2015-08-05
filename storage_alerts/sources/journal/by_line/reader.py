@@ -58,3 +58,5 @@ class Reader(object):
         for entry in cls._journalEntries(start, end):
             for scanner in manager.processEntry(entry):
                 yield scanner
+        for scanner in manager.unrefuted():
+            yield scanner

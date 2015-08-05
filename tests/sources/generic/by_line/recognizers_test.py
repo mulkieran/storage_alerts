@@ -19,6 +19,7 @@
 """ Test recognizers. """
 import unittest
 
+from storage_alerts.sources.generic.by_line.recognizers import LazyRecognizer
 from storage_alerts.sources.generic.by_line.recognizers import ManyRecognizer
 from storage_alerts.sources.generic.by_line.recognizers import NoRecognizer
 from storage_alerts.sources.generic.by_line.recognizers import YesRecognizer
@@ -43,6 +44,28 @@ class YesRecognizerTestCase(unittest.TestCase):
         self.assertEqual(len(rec.info), 0)
         rec.consume(None)
         self.assertEqual(rec.state, RecognizerStates.YES)
+        self.assertEqual(len(rec.evidence), 1)
+        self.assertEqual(len(rec.info), 0)
+
+class MaybeYesRecognizerTestCase(unittest.TestCase):
+    """ Test the maybe yes recognizer. """
+
+    def testZero(self):
+        """ It always says no at start. """
+        rec = LazyRecognizer()
+        self.assertEqual(rec.state, RecognizerStates.NO)
+        self.assertEqual(rec.evidence, [])
+        self.assertEqual(len(rec.info), 0)
+
+    def testOne(self):
+        """ It says maybe whatever it reads. """
+        rec = LazyRecognizer()
+        rec.consume(None)
+        self.assertEqual(rec.state, RecognizerStates.MAYBE_YES)
+        self.assertEqual(len(rec.evidence), 1)
+        self.assertEqual(len(rec.info), 0)
+        rec.consume(None)
+        self.assertEqual(rec.state, RecognizerStates.MAYBE_YES)
         self.assertEqual(len(rec.evidence), 1)
         self.assertEqual(len(rec.info), 0)
 

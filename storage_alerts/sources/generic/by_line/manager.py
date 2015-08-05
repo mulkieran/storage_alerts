@@ -71,3 +71,15 @@ class RecognizerManager(object):
     def _ejectRecognizers(self):
         """ Remove scanners according to a scanner ejection policy. """
         self._scanners = list(self._ejector.filtered(self._scanners))
+
+    def unrefuted(self):
+        """ Get unrefuted recognizers.
+
+            These recognizers have recognized a problem but are waiting
+            until they can be certain that the problem has not yet been
+            resolved before committing.
+
+            :returns: a list of recognizers
+            :rtype: list of :class:`.recognizer.Recognizer`
+        """
+        return [s for s in self._scanners if s.state is RecognizerStates.MAYBE_YES]

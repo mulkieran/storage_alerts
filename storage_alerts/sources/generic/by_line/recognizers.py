@@ -45,6 +45,32 @@ class YesRecognizer(Recognizer):
         # pylint: disable=no-self-use
         return dict()
 
+class LazyRecognizer(Recognizer):
+    """ A recognizer that doesn't say yes until it has to. """
+
+    description = "any journal entry represents an unrefutable error"
+
+    def __init__(self):
+        self._evidence = []
+
+    def _consume(self, entry):
+        if self.state is RecognizerStates.MAYBE_YES:
+            return
+        self._evidence = [entry]
+
+    @property
+    def state(self):
+        return RecognizerStates.MAYBE_YES if self._evidence else RecognizerStates.NO
+
+    @property
+    def evidence(self):
+        return self._evidence
+
+    @property
+    def info(self):
+        # pylint: disable=no-self-use
+        return dict()
+
 class NoRecognizer(Recognizer):
     """ A recognizer that always says no. """
 
