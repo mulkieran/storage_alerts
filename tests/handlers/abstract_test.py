@@ -16,19 +16,16 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" An abstract handler class. """
+""" Test abstract super class. """
 
-import abc
+import unittest
 
-from six import add_metaclass
+from storage_alerts.handlers.handler import Handler
 
-@add_metaclass(abc.ABCMeta)
-class Handler(object):
+class HandlerTestCase(unittest.TestCase):
+    """ Test that abstract handler is abstract. """
 
-    @abc.abstractmethod
-    def doIt(self, info):
-        """ Handles the info in some manner.
-
-            :param dict info: a dictionary of key/value pairs
-        """
-        raise NotImplementedError() # pragma: no cover
+    def testInstantiation(self):
+        """ It's an abstract class with an abstract method. """
+        with self.assertRaises(TypeError):
+            Handler()
