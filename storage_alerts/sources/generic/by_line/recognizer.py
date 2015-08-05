@@ -52,7 +52,7 @@ class Recognizer(object):
 
             Updates internal structures that indicate match or not.
         """
-        raise NotImplementedError("Abstract Method")
+        raise NotImplementedError("Abstract Method") #pragma: no cover
 
     def consume(self, entry):
         """ Consume a journal entry.
