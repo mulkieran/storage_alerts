@@ -16,13 +16,17 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" A module that prints a message to stdout for every alert. """
+""" Test simpleprint. """
 
-from .handler import Handler
+import unittest
 
-class PrintHandler(Handler):
-    """ Just prints out all key/value pairs. """
+from storage_alerts.handlers.simpleprint import PrintHandler
 
-    def doIt(self, info):
-        for key in info.keys():
-            print("%s: %s" % (key, info[key]))
+class PrintHandlerTestCase(unittest.TestCase):
+    """ Test the print handler. """
+
+    def testIt(self):
+        """ Just exercise the doIt() method. """
+        # pylint: disable=no-self-use
+        p = PrintHandler()
+        p.doIt({"key": "value"})

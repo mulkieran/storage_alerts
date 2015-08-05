@@ -25,8 +25,6 @@ from six import add_metaclass
 @add_metaclass(abc.ABCMeta)
 class Handler(object):
 
-    DEFAULT_MESSAGE = abc.abstractproperty(doc="a default message")
-
     @abc.abstractmethod
     def doIt(self, info):
         """ Handles the info in some manner.
