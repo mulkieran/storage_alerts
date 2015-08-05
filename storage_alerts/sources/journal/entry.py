@@ -25,4 +25,14 @@ class Entry(generic.entry.Entry):
 
         Subclasses of this class can enforce validity requirements for entries.
     """
-    pass
+
+    def __init__(self, logentry):
+        """ Initializer.
+
+            :param dict logentry: a journal log entry
+        """
+        self._fields = dict(logentry)
+
+    @property
+    def fields(self):
+        return self._fields

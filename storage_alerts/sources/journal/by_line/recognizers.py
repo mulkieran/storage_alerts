@@ -58,6 +58,4 @@ class ProcessRecognizer(Recognizer):
     @property
     def info(self):
         # pylint: disable=no-self-use
-        return {
-           'MESSAGE' : "Detected a %s process." % self._process
-        }
+        return dict()
