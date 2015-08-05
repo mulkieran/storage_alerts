@@ -62,7 +62,7 @@ class RecognizerManager(object):
         scanners = self._scanners + [c() for c in self._klasses]
         for scanner in scanners:
             scanner.consume(entry)
-        yeses = [s for s in scanners if s.state == RecognizerStates.YES]
+        yeses = [s for s in scanners if s.state is RecognizerStates.YES]
         self._scanners = [s for s in scanners if s.state in (RecognizerStates.MAYBE_STATES)]
         self._ejectRecognizers()
         logging.debug(self._scannersStr(self._scanners))

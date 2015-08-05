@@ -61,7 +61,7 @@ class Recognizer(object):
             :rtype: :class:`.scanner.RecognizerState`
             :returns: a state indicating status of scanner
         """
-        if self.state == RecognizerStates.YES:
+        if self.state is RecognizerStates.YES:
             return self.state
         self._consume(entry)
         return self.state
