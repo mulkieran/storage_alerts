@@ -24,7 +24,9 @@ from ...generic.by_line.states import RecognizerStates
 class ProcessRecognizer(Recognizer):
     """ A recognizer that says yes after a message from a specified process. """
 
-    description = "a process recognizer"
+    @property
+    def description(self):
+        return "a %s process recognizer" % self._process
 
     def __init__(self, process):
         """ Initializer.

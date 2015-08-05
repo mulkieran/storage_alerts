@@ -71,7 +71,9 @@ class NoRecognizer(Recognizer):
 class ManyRecognizer(Recognizer):
     """ A recognizer that says yes after a designated number of messages. """
 
-    description = "a lot of messages recognizer"
+    @property
+    def description(self):
+        return "a %s message recognizer" % self._number
 
     def __init__(self, number):
         """ Initializer.

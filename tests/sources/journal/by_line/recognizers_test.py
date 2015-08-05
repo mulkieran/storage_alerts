@@ -50,3 +50,7 @@ class ProcessRecognizerTestCase(unittest.TestCase):
         self.assertEqual(rec.evidence, [])
         self.assertEqual(len(rec.info), 0)
 
+    def testStr(self):
+        """ Test that str has relevant information. """
+        rec = ProcessRecognizer("python")
+        self.assertIn(rec._process, str(rec)) # pylint: disable=protected-access

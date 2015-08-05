@@ -101,3 +101,8 @@ class ManyRecognizerTestCase(unittest.TestCase):
         info = rec.info
         self.assertEqual(info['COUNT'], 0)
         self.assertEqual(info['REQUIRED'], 2)
+
+    def testStr(self):
+        """ The description contains some relevant information. """
+        rec = ManyRecognizer(2)
+        self.assertIn(str(rec._number), str(rec)) # pylint: disable=protected-access
