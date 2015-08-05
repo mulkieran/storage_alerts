@@ -1,3 +1,7 @@
+null    :=
+space   := $(null) #
+comma   := ,
+
 SUBDIRS = augmenters controllers handlers sources
 
 check:
@@ -36,7 +40,12 @@ clean:
 test:
 	PYTHONPATH=.:tests/ python -m unittest discover -v -s tests/ -p '*_test.py'
 
+OMIT_PATHS = storage_alerts/_runner.py
+OMIT_PATHS += storage_alerts/controllers/time.py
+OMIT_PATHS += storage_alerts/sources/generic/scanner.py
+OMIT_PATHS += storage_alerts/sources/journal/by_line/reader.py
+OMIT = $(subst $(space),$(comma),$(strip $(OMIT_PATHS)))
 coverage:
-	PYTHONPATH=.:tests/ coverage run --timid --branch -m unittest discover -v -s tests/ -p '*_test.py'
+	PYTHONPATH=.:tests/ coverage run --timid --branch --omit="$(OMIT)" -m unittest discover -v -s tests/ -p '*_test.py'
 	coverage report --include="storage_alerts/*"
 	coverage html --include="storage_alerts/*"
