@@ -27,20 +27,29 @@ from storage_alerts.sources.generic.by_line.recognizers import YesRecognizer
 class ManagerTestCase(unittest.TestCase):
     """ Test a manager. """
 
+    def _invariants(self, manager):
+        """ Class invariants. """
+        unrefuted = set(manager.unrefuted())
+        undecided = set(manager.undecided())
+        self.assertTrue(unrefuted.issubset(undecided))
+
     def testEmpty(self):
         """ Test that an entry w/out any recognizers is correctly processed. """
-        manager = RecognizerManager([], NoneEjector)
+        manager = RecognizerManager([], NoneEjector, [])
         self.assertEqual(manager.processEntry(None), [])
         self.assertEqual(len(manager.unrefuted()), 0)
+        self._invariants(manager)
 
     def testYes(self):
         """ Test with an always true recognizer. """
-        manager = RecognizerManager([YesRecognizer], NoneEjector)
+        manager = RecognizerManager([YesRecognizer], NoneEjector, [])
         self.assertEqual(len(manager.processEntry(None)), 1)
         self.assertEqual(len(manager.unrefuted()), 0)
+        self._invariants(manager)
 
     def testLazy(self):
         """ Test with a lazy recognizer. """
-        manager = RecognizerManager([LazyRecognizer], NoneEjector)
+        manager = RecognizerManager([LazyRecognizer], NoneEjector, [])
         self.assertEqual(len(manager.processEntry(None)), 0)
         self.assertEqual(len(manager.unrefuted()), 1)
+        self._invariants(manager)

@@ -29,16 +29,19 @@ class RecognizerManager(object):
     #     * all scanner objects in self._scanners are in MAYBE states
     #     * there are no duplicate classes in self._klasses
 
-    def __init__(self, klasses, ejector):
+    def __init__(self, klasses, ejector, scanners):
         """ Initializer.
 
             :param klasses: list of Recognizer classes
             :type klasses: any sequence-like object
             :param :class:`EjectionPolicy` ejector: an ejection policy
+            :param scanners: a list of recognizers
+            :type scanners: list of :class:`Recognizer`
         """
         self._scanners = []
         self._klasses = set(klasses)
         self._ejector = ejector
+        self._scanners = scanners
 
     def _scannersStr(self, scanners):
         """ Returns a str representation of a list of scanners.
@@ -83,3 +86,15 @@ class RecognizerManager(object):
             :rtype: list of :class:`.recognizer.Recognizer`
         """
         return [s for s in self._scanners if s.state is RecognizerStates.MAYBE_YES]
+
+    def undecided(self):
+        """ Get undecided recognizers.
+
+            These recognizers may learn more if given more log.
+
+            :returns: a list of recognizers
+            :rtype: list of :class:`.recognizer.Recognizer`
+
+            Note that unrefuted is a subset of undecided.
+        """
+        return self._scanners[:]
