@@ -47,6 +47,18 @@ class YesRecognizerTestCase(unittest.TestCase):
         self.assertEqual(len(rec.evidence), 1)
         self.assertEqual(len(rec.info), 0)
 
+    def testCopy(self):
+        rec = YesRecognizer()
+        rec.consume(None)
+        self.assertEqual(rec.state, RecognizerStates.YES)
+        self.assertEqual(len(rec.evidence), 1)
+        self.assertEqual(len(rec.info), 0)
+
+        rec2 = rec.initializeNew()
+        self.assertEqual(rec2.state, RecognizerStates.NO)
+        self.assertEqual(len(rec2.evidence), 0)
+        self.assertEqual(len(rec2.info), 0)
+
 class MaybeYesRecognizerTestCase(unittest.TestCase):
     """ Test the maybe yes recognizer. """
 
@@ -69,6 +81,19 @@ class MaybeYesRecognizerTestCase(unittest.TestCase):
         self.assertEqual(len(rec.evidence), 1)
         self.assertEqual(len(rec.info), 0)
 
+    def testCopy(self):
+        """ Test that copy really resets. """
+        rec = LazyRecognizer()
+        rec.consume(None)
+        self.assertEqual(rec.state, RecognizerStates.MAYBE_YES)
+        self.assertEqual(len(rec.evidence), 1)
+        self.assertEqual(len(rec.info), 0)
+
+        rec2 = rec.initializeNew()
+        self.assertEqual(rec2.state, RecognizerStates.NO)
+        self.assertEqual(rec2.evidence, [])
+        self.assertEqual(len(rec2.info), 0)
+
 class NoRecognizerTestCase(unittest.TestCase):
     """ Test the recognizer that always says no. """
 
@@ -86,6 +111,12 @@ class NoRecognizerTestCase(unittest.TestCase):
         self.assertEqual(rec.state, RecognizerStates.NO)
         self.assertEqual(rec.evidence, [])
         self.assertEqual(len(rec.info), 0)
+
+    def testCopy(self):
+        """ Test copying. """
+        rec = NoRecognizer()
+        rec2 = rec.initializeNew()
+        self.assertFalse(rec is rec2)
 
 class ManyRecognizerTestCase(unittest.TestCase):
     """ Test the many recognizer. """
@@ -129,3 +160,14 @@ class ManyRecognizerTestCase(unittest.TestCase):
         """ The description contains some relevant information. """
         rec = ManyRecognizer(2)
         self.assertIn(str(rec._number), str(rec)) # pylint: disable=protected-access
+
+    def testCopy(self):
+        """ Test copying. """
+        rec = ManyRecognizer(1)
+        self.assertEqual(rec.state, RecognizerStates.NO)
+        rec.consume(None)
+        self.assertEqual(rec.state, RecognizerStates.YES)
+        self.assertEqual(len(rec.evidence), 1)
+
+        rec2 = rec.initializeNew()
+        self.assertEqual(rec2.state, RecognizerStates.NO)

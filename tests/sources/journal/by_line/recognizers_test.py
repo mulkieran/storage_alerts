@@ -54,3 +54,25 @@ class ProcessRecognizerTestCase(unittest.TestCase):
         """ Test that str has relevant information. """
         rec = ProcessRecognizer("python")
         self.assertIn(rec._process, str(rec)) # pylint: disable=protected-access
+
+    def testCopy(self):
+        """ Test copying. """
+        rec = ProcessRecognizer("python")
+        self.assertEqual(rec.state, RecognizerStates.NO)
+        self.assertEqual(rec.evidence, [])
+        self.assertEqual(len(rec.info), 0)
+        entry = Entry({'_COMM': 'python'})
+        rec.consume(entry)
+        self.assertEqual(rec.state, RecognizerStates.YES)
+        self.assertEqual(rec.evidence, [entry])
+        self.assertEqual(len(rec.info), 0)
+
+        rec2 = rec.initializeNew()
+        self.assertEqual(rec2.state, RecognizerStates.NO)
+        self.assertEqual(rec2.evidence, [])
+        self.assertEqual(len(rec2.info), 0)
+        entry = Entry({'_COMM': 'python'})
+        rec2.consume(entry)
+        self.assertEqual(rec2.state, RecognizerStates.YES)
+        self.assertEqual(rec2.evidence, [entry])
+        self.assertEqual(len(rec2.info), 0)

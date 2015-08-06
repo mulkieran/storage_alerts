@@ -74,3 +74,16 @@ class Recognizer(object):
 
     info = abc.abstractproperty(doc="information for consumers")
     """ :rtype: dict of key/value pairs """
+
+    @abc.abstractmethod
+    def initializeNew(self):
+        """ Make an initial object from this object.
+
+            The new object should have the same type and
+            have values that a newly constructed object of this
+            type should have.
+
+            Should have the same result as deepcopy would have if the
+            copy were made immediately after the object were instantiated.
+        """
+        raise NotImplementedError() #pragma: no cover

@@ -27,19 +27,18 @@ class RecognizerManager(object):
 
     #    Invariants:
     #     * all scanner objects in self._scanners are in MAYBE states
-    #     * there are no duplicate classes in self._klasses
+    #     * there are no duplicates in self._recognizers
 
-    def __init__(self, klasses, ejector, scanners):
+    def __init__(self, recognizers, ejector, scanners):
         """ Initializer.
 
-            :param klasses: list of Recognizer classes
-            :type klasses: any sequence-like object
+            :param recognizers: list of recognizer objects
+            :type recognizers: list of :class:`Recognizer`
             :param :class:`EjectionPolicy` ejector: an ejection policy
             :param scanners: a list of recognizers
             :type scanners: list of :class:`Recognizer`
         """
-        self._scanners = []
-        self._klasses = set(klasses)
+        self._recognizers = set(recognizers)
         self._ejector = ejector
         self._scanners = scanners
 
@@ -62,7 +61,7 @@ class RecognizerManager(object):
             Use all current scanners, which all have state MAYBE_*, and also
             instantiates new objects for every registered scanner class.
         """
-        scanners = self._scanners + [c() for c in self._klasses]
+        scanners = self._scanners + [r.initializeNew() for r in self._recognizers]
         for scanner in scanners:
             scanner.consume(entry)
         yeses = [s for s in scanners if s.state is RecognizerStates.YES]

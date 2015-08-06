@@ -36,6 +36,9 @@ class ProcessRecognizer(Recognizer):
         self._process = process
         self._evidence = []
 
+    def initializeNew(self):
+        return ProcessRecognizer(self._process)
+
     def _consume(self, entry):
         """ Consumes a journal entry.
 

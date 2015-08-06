@@ -42,14 +42,14 @@ class ManagerTestCase(unittest.TestCase):
 
     def testYes(self):
         """ Test with an always true recognizer. """
-        manager = RecognizerManager([YesRecognizer], NoneEjector, [])
+        manager = RecognizerManager([YesRecognizer()], NoneEjector, [])
         self.assertEqual(len(manager.processEntry(None)), 1)
         self.assertEqual(len(manager.unrefuted()), 0)
         self._invariants(manager)
 
     def testLazy(self):
         """ Test with a lazy recognizer. """
-        manager = RecognizerManager([LazyRecognizer], NoneEjector, [])
+        manager = RecognizerManager([LazyRecognizer()], NoneEjector, [])
         self.assertEqual(len(manager.processEntry(None)), 0)
         self.assertEqual(len(manager.unrefuted()), 1)
         self._invariants(manager)

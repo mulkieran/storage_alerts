@@ -29,6 +29,9 @@ class YesRecognizer(Recognizer):
     def __init__(self):
         self._evidence = []
 
+    def initializeNew(self):
+        return YesRecognizer()
+
     def _consume(self, entry):
         self._evidence = [entry]
 
@@ -53,6 +56,9 @@ class LazyRecognizer(Recognizer):
     def __init__(self):
         self._evidence = []
 
+    def initializeNew(self):
+        return LazyRecognizer()
+
     def _consume(self, entry):
         if self.state is RecognizerStates.MAYBE_YES:
             return
@@ -75,6 +81,9 @@ class NoRecognizer(Recognizer):
     """ A recognizer that always says no. """
 
     description = "does not recognize any errors"
+
+    def initializeNew(self):
+        return NoRecognizer()
 
     def _consume(self, entry):
         pass
@@ -108,6 +117,9 @@ class ManyRecognizer(Recognizer):
         """
         self._number = number
         self._evidence = []
+
+    def initializeNew(self):
+        return ManyRecognizer(self._number)
 
     def _consume(self, entry):
         self._evidence.append(entry)
