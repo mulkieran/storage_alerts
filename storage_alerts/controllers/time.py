@@ -23,24 +23,29 @@ import datetime
 class FromTime(object):
     """ Runs at intervals from previous time. """
 
-    def __init__(self, recognizers, start_time, klass):
+    def __init__(self, start_time, recognizers, scanner):
         """ Initializer.
 
-            :param recognizers: a sequence of Recognizer classes
-            :type recognizers: sequence of :class:`.sources.journal.Recognizer`
             :param datetime start_time: from when to start next journal scan
-            :param class klass: a class, subtype of :class:`.scanner.Scanner`
+            :param recognizers: a sequence of initial recognizer objects
+            :type recognizers: list of :class:`.sources.journal.Recognizer`
+            :param scanner: the scanner detects all the matches
+            :type scanner: a class, subtype of :class:`.scanner.Scanner`
         """
         self._start_time = start_time
-        self._recognizers = set(recognizers)
-        self._klass = klass
+        self._recognizers = recognizers
+        self._scanner = scanner
 
     def matches(self):
         """ Returns a list of matches using recognizers from start time.
 
             Updates start time when done.
+
+            :returns: generator of Recognizer objects
+            :rtype: generator of :class:`Recognizer`
         """
-        recognizers = self._klass.matches(self._start_time, None)
-        for recognizer in recognizers:
+        yeses, maybes = self._scanner.matches(self._start_time, self._recognizers)
+        for recognizer in yeses:
             yield recognizer
         self._start_time = datetime.datetime.now()
+        self._recognizers = maybes
