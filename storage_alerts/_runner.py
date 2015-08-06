@@ -31,15 +31,16 @@ class Runner(object):
     def __init__(self, log_level=logging.DEBUG):
         logging.basicConfig(filename="storage_alerts.log", level=log_level)
         recognizers = [
+            sources.generic.by_line.recognizers.ManyRecognizer(5),
             sources.journal.by_line.recognizers.ProcessRecognizer('python'),
-            sources.generic.by_line.recognizers.NoRecognizer,
-            sources.generic.by_line.recognizers.YesRecognizer
+            sources.generic.by_line.recognizers.NoRecognizer(),
+            sources.generic.by_line.recognizers.YesRecognizer()
         ]
 
         self._journal = controllers.time.FromTime(
            datetime.datetime.now(),
            [],
-           sources.generic.by_line.scanner.LogScanner(
+           sources.generic.by_line.LogScanner(
               sources.journal.by_line.Reader(),
               sources.generic.by_line.RecognizerManager(recognizers),
               sources.generic.by_line.ejection.NewerDuplicates
