@@ -16,23 +16,15 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" For reading from the systemd journal. """
+""" Test reader. """
+import unittest
 
-from systemd import journal
+from storage_alerts.sources.generic.by_line.reader import NullReader
 
-from ...generic.by_line.reader import Reader as R
-from ..entry import Entry
+class NullReaderTestCase(unittest.TestCase):
+    """ Test the reader that returns a designated number of NullEntries. """
 
-class Reader(R):
-    """ Reads and processes journal entries. """
-
-    def entries(self, start):
-        # pylint: disable=no-self-use
-        jrnl = journal.Reader()
-        jrnl.seek_realtime(start)
-        while True:
-            logentry = jrnl.get_next()
-            if logentry:
-                yield Entry(logentry)
-            else:
-                break
+    def testTen(self):
+        """ Yield 10 entries. """
+        reader = NullReader(10)
+        self.assertEqual(len(list(reader.entries(None))), 10)

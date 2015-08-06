@@ -30,11 +30,25 @@ class LogScanner(object):
         self._reader = reader
         self._manager = manager
 
-    def matches(self, start, end=None):
+    def matches(self, start):
         """ Generate a sequence of recognizer matches.
 
             :param datetime start: start time
-            :param end: end time, may be None
-            :type end: datetime or NoneType
+            :returns: a generator of scanner matches
+            :rtype: generator of :class:`Recognizer`
         """
-        return self._reader.matches(self._manager, start, end)
+        for entry in self._reader.entries(start):
+            for scanner in self._manager.processEntry(entry):
+                yield scanner
+        for scanner in self._manager.unrefuted():
+            yield scanner
+
+    def undecided(self):
+        """ Scanners that have not said yes or no.
+
+            :returns: a list of recognizers
+            :rtype: list of :class:`Recognizer`
+
+            Note that all recognizers will be in an undecided state.
+        """
+        return self._manager.undecided()

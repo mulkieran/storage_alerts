@@ -42,7 +42,6 @@ test:
 
 OMIT_PATHS = storage_alerts/_runner.py
 OMIT_PATHS += storage_alerts/controllers/time.py
-OMIT_PATHS += storage_alerts/sources/generic/scanner.py
 OMIT_PATHS += storage_alerts/sources/journal/by_line/reader.py
 OMIT = $(subst $(space),$(comma),$(strip $(OMIT_PATHS)))
 coverage:

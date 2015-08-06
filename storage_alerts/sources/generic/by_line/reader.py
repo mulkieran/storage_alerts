@@ -16,23 +16,37 @@
 #
 # Red Hat Author(s): Anne Mulhern <amulhern@redhat.com>
 
-""" For reading from the systemd journal. """
+""" General reading interface. """
 
-from systemd import journal
+import abc
 
-from ...generic.by_line.reader import Reader as R
-from ..entry import Entry
+from six import add_metaclass
 
-class Reader(R):
-    """ Reads and processes journal entries. """
+from ..entry import NullEntry
+
+@add_metaclass(abc.ABCMeta)
+class Reader(object):
+    """ Reads and processes log entries. """
+
+    @abc.abstractmethod
+    def entries(self, start):
+        """ Generate a sequence of journal entries.
+
+            :param datetime start: start time
+            :returns: a sequence of entries
+            :rtype: generator of :class:`..entry.Entry`
+        """
+        raise NotImplementedError() #pragma: no cover
+
+class NullReader(Reader):
+
+    def __init__(self, number):
+        """ Initializer.
+
+            :param int number: number of entries to generate
+        """
+        self._number = number
 
     def entries(self, start):
-        # pylint: disable=no-self-use
-        jrnl = journal.Reader()
-        jrnl.seek_realtime(start)
-        while True:
-            logentry = jrnl.get_next()
-            if logentry:
-                yield Entry(logentry)
-            else:
-                break
+        for _ in range(self._number):
+            yield NullEntry()

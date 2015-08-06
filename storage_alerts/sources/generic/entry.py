@@ -28,3 +28,8 @@ class Entry(object):
         Subclasses of this class can enforce validity requirements for entries.
     """
     fields = abc.abstractproperty(doc="dict containing entry fields")
+
+class NullEntry(Entry):
+    """ A null log entry. """
+
+    fields = dict()
