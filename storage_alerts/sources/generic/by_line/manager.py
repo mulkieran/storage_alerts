@@ -24,7 +24,7 @@ class RecognizerManager(object):
     """ Maintains a set of Recognizer classes. """
 
     #    Invariants:
-    #     * there are no duplicates in self._recognizers
+    #     * there are no duplicates in self._RECOGNIZERS
 
     def __init__(self, recognizers):
         """ Initializer.
@@ -35,7 +35,7 @@ class RecognizerManager(object):
             :param scanners: a list of recognizers
             :type scanners: list of :class:`Recognizer`
         """
-        self._recognizers = set(recognizers)
+        self._RECOGNIZERS = set(recognizers)
 
     def processEntry(self, entry, scanners):
         """ Process a journal entry.
@@ -49,7 +49,7 @@ class RecognizerManager(object):
             Use all current scanners, which all have state MAYBE_*, and also
             instantiates new objects for every registered scanner class.
         """
-        scanners = scanners + [r.initializeNew() for r in self._recognizers]
+        scanners = scanners + [r.initializeNew() for r in self._RECOGNIZERS]
         for scanner in scanners:
             scanner.consume(entry)
         yeses = [s for s in scanners if s.state is RecognizerStates.YES]

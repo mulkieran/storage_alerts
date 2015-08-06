@@ -34,7 +34,7 @@ class FromTime(object):
         """
         self._start_time = start_time
         self._recognizers = recognizers
-        self._scanner = scanner
+        self._SCANNER = scanner
 
     def matches(self):
         """ Returns a list of matches using recognizers from start time.
@@ -44,7 +44,7 @@ class FromTime(object):
             :returns: generator of Recognizer objects
             :rtype: generator of :class:`Recognizer`
         """
-        yeses, maybes = self._scanner.matches(self._start_time, self._recognizers)
+        yeses, maybes = self._SCANNER.matches(self._start_time, self._recognizers)
         for recognizer in yeses:
             yield recognizer
         self._start_time = datetime.datetime.now()

@@ -159,7 +159,7 @@ class ManyRecognizerTestCase(unittest.TestCase):
     def testStr(self):
         """ The description contains some relevant information. """
         rec = ManyRecognizer(2)
-        self.assertIn(str(rec._number), str(rec)) # pylint: disable=protected-access
+        self.assertIn(str(rec._NUMBER), str(rec)) # pylint: disable=protected-access
 
     def testCopy(self):
         """ Test copying. """

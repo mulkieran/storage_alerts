@@ -34,9 +34,9 @@ class LogScanner(object):
             :param Reader reader: a reader object for the log
             :param Manager manager: a manager for recognizers
         """
-        self._reader = reader
-        self._manager = manager
-        self._ejector = ejector
+        self._READER = reader
+        self._MANAGER = manager
+        self._EJECTOR = ejector
 
     def matches(self, start, maybes):
         """ Generate a sequence of recognizer matches.
@@ -48,9 +48,9 @@ class LogScanner(object):
             :rtype: tuple of lists of :class:`Recognizer`
         """
         final_yeses = []
-        for entry in self._reader.entries(start):
-            yeses, maybes = self._manager.processEntry(entry, maybes)
+        for entry in self._READER.entries(start):
+            yeses, maybes = self._MANAGER.processEntry(entry, maybes)
             final_yeses += yeses
-            maybes = list(self._ejector.filtered(maybes))
+            maybes = list(self._EJECTOR.filtered(maybes))
         final_yeses += [s for s in maybes if s.state is RecognizerStates.MAYBE_YES]
         return final_yeses, maybes

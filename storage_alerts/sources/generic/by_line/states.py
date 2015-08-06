@@ -26,10 +26,10 @@ class _RecognizerState(object):
 
             :param str desc: meaning of scanner state
         """
-        self._desc = desc
+        self._DESC = desc
 
     def __str__(self):
-        return self._desc
+        return self._DESC
     __repr__ = __str__
 
 class RecognizerStates(object):

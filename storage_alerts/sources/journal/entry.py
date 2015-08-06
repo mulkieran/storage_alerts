@@ -31,8 +31,8 @@ class Entry(generic.entry.Entry):
 
             :param dict logentry: a journal log entry
         """
-        self._fields = dict(logentry)
+        self._FIELDS = dict(logentry)
 
     @property
     def fields(self):
-        return self._fields
+        return self._FIELDS

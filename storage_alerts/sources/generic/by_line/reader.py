@@ -45,8 +45,8 @@ class NullReader(Reader):
 
             :param int number: number of entries to generate
         """
-        self._number = number
+        self._NUMBER = number
 
     def entries(self, start):
-        for _ in range(self._number):
+        for _ in range(self._NUMBER):
             yield NullEntry()

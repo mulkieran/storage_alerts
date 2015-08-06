@@ -53,7 +53,7 @@ class ProcessRecognizerTestCase(unittest.TestCase):
     def testStr(self):
         """ Test that str has relevant information. """
         rec = ProcessRecognizer("python")
-        self.assertIn(rec._process, str(rec)) # pylint: disable=protected-access
+        self.assertIn(rec._PROCESS, str(rec)) # pylint: disable=protected-access
 
     def testCopy(self):
         """ Test copying. """

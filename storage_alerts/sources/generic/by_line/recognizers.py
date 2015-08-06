@@ -108,18 +108,18 @@ class ManyRecognizer(Recognizer):
 
     @property
     def description(self):
-        return "a %s message recognizer" % self._number
+        return "a %s message recognizer" % self._NUMBER
 
     def __init__(self, number):
         """ Initializer.
 
             :param int number: number of messages that indicates a problem
         """
-        self._number = number
+        self._NUMBER = number
         self._evidence = []
 
     def initializeNew(self):
-        return ManyRecognizer(self._number)
+        return ManyRecognizer(self._NUMBER)
 
     def _consume(self, entry):
         self._evidence.append(entry)
@@ -127,7 +127,7 @@ class ManyRecognizer(Recognizer):
     @property
     def state(self):
         l = len(self._evidence)
-        if l == self._number:
+        if l == self._NUMBER:
             return RecognizerStates.YES
         if l == 0:
             return RecognizerStates.NO
@@ -141,5 +141,5 @@ class ManyRecognizer(Recognizer):
     def info(self):
         return {
            'COUNT': len(self._evidence),
-           'REQUIRED' : self._number
+           'REQUIRED' : self._NUMBER
         }
