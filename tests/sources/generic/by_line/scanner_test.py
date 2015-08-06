@@ -34,63 +34,63 @@ class ScannerTestCase(unittest.TestCase):
 
     def testEmpty(self):
         """ The manager does not recognize, so no results. """
-        manager = RecognizerManager([], NoneEjector, [])
+        manager = RecognizerManager([])
         reader = NullReader(10)
-        scanner = LogScanner(reader, manager)
-        matches = list(scanner.matches(datetime.datetime.now))
-        self.assertEqual(len(matches), 0)
-        self.assertEqual(len(scanner.undecided()), 0)
+        scanner = LogScanner(reader, manager, NoneEjector)
+        yeses, maybes = scanner.matches(datetime.datetime.now, [])
+        self.assertEqual(len(yeses), 0)
+        self.assertEqual(len(maybes), 0)
 
     def testYes(self):
         """ The manager always says yes, and never filters. """
-        manager = RecognizerManager([YesRecognizer()], NoneEjector, [])
+        manager = RecognizerManager([YesRecognizer()])
         reader = NullReader(10)
-        scanner = LogScanner(reader, manager)
-        matches = list(scanner.matches(datetime.datetime.now))
-        self.assertEqual(len(matches), 10)
-        self.assertEqual(len(scanner.undecided()), 0)
+        scanner = LogScanner(reader, manager, NoneEjector)
+        yeses, maybes = scanner.matches(datetime.datetime.now, [])
+        self.assertEqual(len(yeses), 10)
+        self.assertEqual(len(maybes), 0)
 
     def testMaybeYes(self):
         """ Lazy recognizers do not say yes until log is read. """
-        manager = RecognizerManager([LazyRecognizer()], NoneEjector, [])
+        manager = RecognizerManager([LazyRecognizer()])
         reader = NullReader(10)
-        scanner = LogScanner(reader, manager)
-        matches = list(scanner.matches(datetime.datetime.now))
-        self.assertEqual(len(matches), 10)
-        self.assertEqual(len(scanner.undecided()), 10)
+        scanner = LogScanner(reader, manager, NoneEjector)
+        yeses, maybes = scanner.matches(datetime.datetime.now, [])
+        self.assertEqual(len(yeses), 10)
+        self.assertEqual(len(maybes), 10)
 
     def testMaybeNo(self):
         """ Many recognizers says no if it does not get enough entries. """
-        manager = RecognizerManager([ManyRecognizer(11)], NoneEjector, [])
+        manager = RecognizerManager([ManyRecognizer(11)])
         reader = NullReader(10)
-        scanner = LogScanner(reader, manager)
-        matches = list(scanner.matches(datetime.datetime.now))
-        self.assertEqual(len(matches), 0)
-        self.assertEqual(len(scanner.undecided()), 10)
+        scanner = LogScanner(reader, manager, NoneEjector)
+        yeses, maybes = scanner.matches(datetime.datetime.now, [])
+        self.assertEqual(len(yeses), 0)
+        self.assertEqual(len(maybes), 10)
 
     def testEjection(self):
         """ Ejecting all newer duplicates should leave just 1. """
-        manager = RecognizerManager([YesRecognizer()], NewerDuplicates, [])
+        manager = RecognizerManager([YesRecognizer()])
         reader = NullReader(10)
-        scanner = LogScanner(reader, manager)
-        matches = list(scanner.matches(datetime.datetime.now))
-        self.assertEqual(len(matches), 10)
-        self.assertEqual(len(scanner.undecided()), 0)
+        scanner = LogScanner(reader, manager, NewerDuplicates)
+        yeses, maybes = scanner.matches(datetime.datetime.now, [])
+        self.assertEqual(len(yeses), 10)
+        self.assertEqual(len(maybes), 0)
 
     def testCurrentScanner(self):
         """ Show that passing in process scanners builds on previous. """
-        manager = RecognizerManager([ManyRecognizer(11)], NoneEjector, [])
+        manager = RecognizerManager([ManyRecognizer(11)])
         reader = NullReader(10)
-        scanner = LogScanner(reader, manager)
-        matches = list(scanner.matches(datetime.datetime.now))
-        self.assertEqual(len(matches), 0)
-        self.assertEqual(len(scanner.undecided()), 10)
+        scanner = LogScanner(reader, manager, NoneEjector)
+        yeses, maybes = scanner.matches(datetime.datetime.now, [])
+        self.assertEqual(len(yeses), 0)
+        self.assertEqual(len(maybes), 10)
 
         # take all undecided scanners from previous run and reuse
-        many_recognizers = scanner.undecided()
-        manager = RecognizerManager([], NoneEjector, many_recognizers)
+        many_recognizers = maybes
+        manager = RecognizerManager([])
         reader = NullReader(5)
-        scanner = LogScanner(reader, manager)
-        matches = list(scanner.matches(datetime.datetime.now))
-        self.assertEqual(len(matches), 5)
-        self.assertEqual(len(scanner.undecided()), 5)
+        scanner = LogScanner(reader, manager, NoneEjector)
+        yeses, maybes = scanner.matches(datetime.datetime.now, many_recognizers)
+        self.assertEqual(len(yeses), 5)
+        self.assertEqual(len(maybes), 5)

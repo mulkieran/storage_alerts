@@ -18,18 +18,15 @@
 
 """ For managing  objects. """
 
-import logging
-
 from .states import RecognizerStates
 
 class RecognizerManager(object):
     """ Maintains a set of Recognizer classes. """
 
     #    Invariants:
-    #     * all scanner objects in self._scanners are in MAYBE states
     #     * there are no duplicates in self._recognizers
 
-    def __init__(self, recognizers, ejector, scanners):
+    def __init__(self, recognizers):
         """ Initializer.
 
             :param recognizers: list of recognizer objects
@@ -39,61 +36,22 @@ class RecognizerManager(object):
             :type scanners: list of :class:`Recognizer`
         """
         self._recognizers = set(recognizers)
-        self._ejector = ejector
-        self._scanners = scanners
 
-    def _scannersStr(self, scanners):
-        """ Returns a str representation of a list of scanners.
-
-            :param list scanners: a list of Recognizers
-            :rtype: str
-        """
-        # pylint: disable=no-self-use
-        return ", ".join(str(s) for s in scanners)
-
-    def processEntry(self, entry):
+    def processEntry(self, entry, scanners):
         """ Process a journal entry.
 
             :param :class:`.Entry` entry: a journal entry
+            :param scanners: a list of current scanners
+            :type scanners: list of :class:`.scanner.Recognizer`
             :returns: a list of matching objects, may be empty
             :rtype: list of :class:`.scanner.Recognizer`
 
             Use all current scanners, which all have state MAYBE_*, and also
             instantiates new objects for every registered scanner class.
         """
-        scanners = self._scanners + [r.initializeNew() for r in self._recognizers]
+        scanners = scanners + [r.initializeNew() for r in self._recognizers]
         for scanner in scanners:
             scanner.consume(entry)
         yeses = [s for s in scanners if s.state is RecognizerStates.YES]
-        self._scanners = [s for s in scanners if s.state in (RecognizerStates.MAYBE_STATES)]
-        self._ejectRecognizers()
-        logging.debug(self._scannersStr(self._scanners))
-        return yeses
-
-    def _ejectRecognizers(self):
-        """ Remove scanners according to a scanner ejection policy. """
-        self._scanners = list(self._ejector.filtered(self._scanners))
-
-    def unrefuted(self):
-        """ Get unrefuted recognizers.
-
-            These recognizers have recognized a problem but are waiting
-            until they can be certain that the problem has not yet been
-            resolved before committing.
-
-            :returns: a list of recognizers
-            :rtype: list of :class:`.recognizer.Recognizer`
-        """
-        return [s for s in self._scanners if s.state is RecognizerStates.MAYBE_YES]
-
-    def undecided(self):
-        """ Get undecided recognizers.
-
-            These recognizers may learn more if given more log.
-
-            :returns: a list of recognizers
-            :rtype: list of :class:`.recognizer.Recognizer`
-
-            Note that unrefuted is a subset of undecided.
-        """
-        return self._scanners[:]
+        maybes = [s for s in scanners if s.state in (RecognizerStates.MAYBE_STATES)]
+        return yeses, maybes

@@ -19,7 +19,6 @@
 """ Test for managers. """
 import unittest
 
-from storage_alerts.sources.generic.by_line.ejection import NoneEjector
 from storage_alerts.sources.generic.by_line.manager import RecognizerManager
 from storage_alerts.sources.generic.by_line.recognizers import LazyRecognizer
 from storage_alerts.sources.generic.by_line.recognizers import YesRecognizer
@@ -27,29 +26,23 @@ from storage_alerts.sources.generic.by_line.recognizers import YesRecognizer
 class ManagerTestCase(unittest.TestCase):
     """ Test a manager. """
 
-    def _invariants(self, manager):
-        """ Class invariants. """
-        unrefuted = set(manager.unrefuted())
-        undecided = set(manager.undecided())
-        self.assertTrue(unrefuted.issubset(undecided))
-
     def testEmpty(self):
         """ Test that an entry w/out any recognizers is correctly processed. """
-        manager = RecognizerManager([], NoneEjector, [])
-        self.assertEqual(manager.processEntry(None), [])
-        self.assertEqual(len(manager.unrefuted()), 0)
-        self._invariants(manager)
+        manager = RecognizerManager([])
+        yeses, maybes = manager.processEntry(None, [])
+        self.assertEqual(yeses, [])
+        self.assertEqual(maybes, [])
 
     def testYes(self):
         """ Test with an always true recognizer. """
-        manager = RecognizerManager([YesRecognizer()], NoneEjector, [])
-        self.assertEqual(len(manager.processEntry(None)), 1)
-        self.assertEqual(len(manager.unrefuted()), 0)
-        self._invariants(manager)
+        manager = RecognizerManager([YesRecognizer()])
+        yeses, maybes = manager.processEntry(None, [])
+        self.assertEqual(len(yeses), 1)
+        self.assertEqual(maybes, [])
 
     def testLazy(self):
         """ Test with a lazy recognizer. """
-        manager = RecognizerManager([LazyRecognizer()], NoneEjector, [])
-        self.assertEqual(len(manager.processEntry(None)), 0)
-        self.assertEqual(len(manager.unrefuted()), 1)
-        self._invariants(manager)
+        manager = RecognizerManager([LazyRecognizer()])
+        yeses, maybes = manager.processEntry(None, [])
+        self.assertEqual(yeses, [])
+        self.assertEqual(len(maybes), 1)

@@ -18,10 +18,17 @@
 
 """ Scanner classes. """
 
-class LogScanner(object):
-    """ Scans for recognizable alerts in a log. """
+from .states import RecognizerStates
 
-    def __init__(self, reader, manager):
+class LogScanner(object):
+    """ Scans for recognizable alerts in a log.
+
+        Essentially combines the actions of the reader, which just
+        obtains entries from some log, and a manager, which inspects
+        the entries.
+    """
+
+    def __init__(self, reader, manager, ejector):
         """ Initializer.
 
             :param Reader reader: a reader object for the log
@@ -29,26 +36,21 @@ class LogScanner(object):
         """
         self._reader = reader
         self._manager = manager
+        self._ejector = ejector
 
-    def matches(self, start):
+    def matches(self, start, maybes):
         """ Generate a sequence of recognizer matches.
 
             :param datetime start: start time
-            :returns: a generator of scanner matches
-            :rtype: generator of :class:`Recognizer`
+            :param maybes: a list of undecided recognizers
+            :type mabyes: list of :class:`Recognizer`
+            :returns: a pair of yeses and maybes
+            :rtype: tuple of lists of :class:`Recognizer`
         """
+        final_yeses = []
         for entry in self._reader.entries(start):
-            for scanner in self._manager.processEntry(entry):
-                yield scanner
-        for scanner in self._manager.unrefuted():
-            yield scanner
-
-    def undecided(self):
-        """ Scanners that have not said yes or no.
-
-            :returns: a list of recognizers
-            :rtype: list of :class:`Recognizer`
-
-            Note that all recognizers will be in an undecided state.
-        """
-        return self._manager.undecided()
+            yeses, maybes = self._manager.processEntry(entry, maybes)
+            final_yeses += yeses
+            maybes = list(self._ejector.filtered(maybes))
+        final_yeses += [s for s in maybes if s.state is RecognizerStates.MAYBE_YES]
+        return final_yeses, maybes
