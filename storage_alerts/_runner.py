@@ -43,7 +43,7 @@ class Runner(object):
            sources.generic.by_line.LogScanner(
               sources.journal.by_line.Reader(),
               sources.generic.by_line.RecognizerManager(recognizers),
-              sources.generic.by_line.ejection.NewerDuplicates
+              sources.generic.ejection.NewerDuplicates
            )
         )
         self._handler = handlers.simpleprint.PrintHandler()

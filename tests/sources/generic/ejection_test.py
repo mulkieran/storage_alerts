@@ -19,8 +19,8 @@
 """ Test for ejection policies. """
 import unittest
 
-from storage_alerts.sources.generic.by_line.ejection import EjectionPolicy
-from storage_alerts.sources.generic.by_line.ejection import NewerDuplicates
+from storage_alerts.sources.generic.ejection import EjectionPolicy
+from storage_alerts.sources.generic.ejection import NewerDuplicates
 
 class AbstractParentTestCase(unittest.TestCase):
     """ Test that abstract parent does not do anything. """

@@ -20,14 +20,14 @@
 import unittest
 import datetime
 
-from storage_alerts.sources.generic.by_line.ejection import NewerDuplicates
-from storage_alerts.sources.generic.by_line.ejection import NoneEjector
 from storage_alerts.sources.generic.by_line.manager import RecognizerManager
 from storage_alerts.sources.generic.by_line.recognizers import LazyRecognizer
 from storage_alerts.sources.generic.by_line.recognizers import ManyRecognizer
 from storage_alerts.sources.generic.by_line.recognizers import YesRecognizer
 from storage_alerts.sources.generic.by_line.scanner import LogScanner
 from storage_alerts.sources.generic.by_line.reader import NullReader
+from storage_alerts.sources.generic.ejection import NewerDuplicates
+from storage_alerts.sources.generic.ejection import NoneEjector
 
 class ScannerTestCase(unittest.TestCase):
     """ Test a scanner. """
