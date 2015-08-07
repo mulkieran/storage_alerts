@@ -60,3 +60,5 @@ target/
 
 *.dot
 *.pdf
+
+*.tar.gz

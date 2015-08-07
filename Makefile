@@ -47,3 +47,6 @@ coverage:
 	PYTHONPATH=.:tests/ coverage run --timid --branch --omit="$(OMIT)" -m unittest discover -v -s tests/ -p '*_test.py'
 	coverage report --include="storage_alerts/*"
 	coverage html --include="storage_alerts/*"
+
+archive:
+	git archive --format tar.gz HEAD > storage_alerts.tar.gz
