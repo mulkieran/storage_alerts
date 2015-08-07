@@ -76,6 +76,14 @@ class Recognizer(object):
     """ :rtype: dict of key/value pairs """
 
     @abc.abstractmethod
+    def __eq__(self, other):
+        raise NotImplementedError() #pragma: no cover
+
+    @abc.abstractmethod
+    def __ne__(self, other):
+        raise NotImplementedError() #pragma: no cover
+
+    @abc.abstractmethod
     def initializeNew(self):
         """ Make an initial object from this object.
 

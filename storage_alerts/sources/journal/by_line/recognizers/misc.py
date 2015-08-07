@@ -26,18 +26,24 @@ class ProcessRecognizer(Recognizer):
 
     @property
     def description(self):
-        return "a %s process recognizer" % self._PROCESS
+        return "a %s process recognizer" % self.PROCESS
 
     def __init__(self, process):
         """ Initializer.
 
             :param str process: name of process
         """
-        self._PROCESS = process
+        self.PROCESS = process
         self._evidence = []
 
     def initializeNew(self):
-        return ProcessRecognizer(self._PROCESS)
+        return ProcessRecognizer(self.PROCESS)
+
+    def __eq__(self, other):
+        return type(other) == ProcessRecognizer and self.PROCESS == other.PROCESS
+
+    def __ne__(self, other):
+        return type(other) != ProcessRecognizer or self.PROCESS != other.PROCESS
 
     def _consume(self, entry):
         """ Consumes a journal entry.
@@ -46,7 +52,7 @@ class ProcessRecognizer(Recognizer):
         """
         self._evidence = []
         comm = entry.fields.get("_COMM")
-        if comm == self._PROCESS:
+        if comm == self.PROCESS:
             self._evidence = [entry]
 
     @property

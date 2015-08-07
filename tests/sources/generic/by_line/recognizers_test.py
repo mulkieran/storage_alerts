@@ -59,6 +59,9 @@ class YesRecognizerTestCase(unittest.TestCase):
         self.assertEqual(len(rec2.evidence), 0)
         self.assertEqual(len(rec2.info), 0)
 
+        self.assertEqual(rec, rec2)
+        self.assertFalse(rec != YesRecognizer())
+
 class MaybeYesRecognizerTestCase(unittest.TestCase):
     """ Test the maybe yes recognizer. """
 
@@ -94,6 +97,9 @@ class MaybeYesRecognizerTestCase(unittest.TestCase):
         self.assertEqual(rec2.evidence, [])
         self.assertEqual(len(rec2.info), 0)
 
+        self.assertEqual(rec, rec2)
+        self.assertFalse(rec != LazyRecognizer())
+
 class NoRecognizerTestCase(unittest.TestCase):
     """ Test the recognizer that always says no. """
 
@@ -117,6 +123,8 @@ class NoRecognizerTestCase(unittest.TestCase):
         rec = NoRecognizer()
         rec2 = rec.initializeNew()
         self.assertFalse(rec is rec2)
+        self.assertEqual(rec, rec2)
+        self.assertFalse(rec != NoRecognizer())
 
 class ManyRecognizerTestCase(unittest.TestCase):
     """ Test the many recognizer. """
@@ -159,7 +167,7 @@ class ManyRecognizerTestCase(unittest.TestCase):
     def testStr(self):
         """ The description contains some relevant information. """
         rec = ManyRecognizer(2)
-        self.assertIn(str(rec._NUMBER), str(rec)) # pylint: disable=protected-access
+        self.assertIn(str(rec.NUMBER), str(rec))
 
     def testCopy(self):
         """ Test copying. """
@@ -171,3 +179,6 @@ class ManyRecognizerTestCase(unittest.TestCase):
 
         rec2 = rec.initializeNew()
         self.assertEqual(rec2.state, RecognizerStates.NO)
+
+        self.assertEqual(rec, rec2)
+        self.assertNotEqual(rec, ManyRecognizer(2))

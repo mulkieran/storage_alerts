@@ -53,7 +53,7 @@ class ProcessRecognizerTestCase(unittest.TestCase):
     def testStr(self):
         """ Test that str has relevant information. """
         rec = ProcessRecognizer("python")
-        self.assertIn(rec._PROCESS, str(rec)) # pylint: disable=protected-access
+        self.assertIn(rec.PROCESS, str(rec))
 
     def testCopy(self):
         """ Test copying. """
@@ -76,3 +76,6 @@ class ProcessRecognizerTestCase(unittest.TestCase):
         self.assertEqual(rec2.state, RecognizerStates.YES)
         self.assertEqual(rec2.evidence, [entry])
         self.assertEqual(len(rec2.info), 0)
+
+        self.assertEqual(rec, rec2)
+        self.assertNotEqual(rec, ProcessRecognizer("multipathd"))

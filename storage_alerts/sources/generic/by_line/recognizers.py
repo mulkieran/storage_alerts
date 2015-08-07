@@ -32,6 +32,12 @@ class YesRecognizer(Recognizer):
     def initializeNew(self):
         return YesRecognizer()
 
+    def __eq__(self, other):
+        return type(other) == YesRecognizer
+
+    def __ne__(self, other):
+        return type(other) != YesRecognizer
+
     def _consume(self, entry):
         self._evidence = [entry]
 
@@ -59,6 +65,12 @@ class LazyRecognizer(Recognizer):
     def initializeNew(self):
         return LazyRecognizer()
 
+    def __eq__(self, other):
+        return type(other) == LazyRecognizer
+
+    def __ne__(self, other):
+        return type(other) != LazyRecognizer
+
     def _consume(self, entry):
         if self.state is RecognizerStates.MAYBE_YES:
             return
@@ -85,6 +97,12 @@ class NoRecognizer(Recognizer):
     def initializeNew(self):
         return NoRecognizer()
 
+    def __eq__(self, other):
+        return type(other) == NoRecognizer
+
+    def __ne__(self, other):
+        return type(other) != NoRecognizer
+
     def _consume(self, entry):
         pass
 
@@ -108,18 +126,24 @@ class ManyRecognizer(Recognizer):
 
     @property
     def description(self):
-        return "a %s message recognizer" % self._NUMBER
+        return "a %s message recognizer" % self.NUMBER
 
     def __init__(self, number):
         """ Initializer.
 
             :param int number: number of messages that indicates a problem
         """
-        self._NUMBER = number
+        self.NUMBER = number
         self._evidence = []
 
+    def __eq__(self, other):
+        return type(other) == ManyRecognizer and self.NUMBER == other.NUMBER
+
+    def __ne__(self, other):
+        return type(other) != ManyRecognizer or self.NUMBER != other.NUMBER
+
     def initializeNew(self):
-        return ManyRecognizer(self._NUMBER)
+        return ManyRecognizer(self.NUMBER)
 
     def _consume(self, entry):
         self._evidence.append(entry)
@@ -127,7 +151,7 @@ class ManyRecognizer(Recognizer):
     @property
     def state(self):
         l = len(self._evidence)
-        if l == self._NUMBER:
+        if l == self.NUMBER:
             return RecognizerStates.YES
         if l == 0:
             return RecognizerStates.NO
@@ -141,5 +165,5 @@ class ManyRecognizer(Recognizer):
     def info(self):
         return {
            'COUNT': len(self._evidence),
-           'REQUIRED' : self._NUMBER
+           'REQUIRED' : self.NUMBER
         }
