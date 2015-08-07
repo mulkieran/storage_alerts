@@ -20,12 +20,11 @@
 
 import abc
 
-from six import add_metaclass
+from six import with_metaclass
 
 from .states import RecognizerStates
 
-@add_metaclass(abc.ABCMeta)
-class Recognizer(object):
+class Recognizer(with_metaclass(abc.ABCMeta, object)):
     """ Abstract parent class of Recognizer classes.
 
         A recognizer may need to read multiple journal

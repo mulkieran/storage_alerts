@@ -20,10 +20,9 @@
 
 import abc
 
-from six import add_metaclass
+from six import with_metaclass
 
-@add_metaclass(abc.ABCMeta)
-class Augmenter(object):
+class Augmenter(with_metaclass(abc.ABCMeta, object)):
     """ Abstract class for augmenting info from recognizer. """
 
     KEY_NAMES = abc.abstractproperty("names of keys that might be set")

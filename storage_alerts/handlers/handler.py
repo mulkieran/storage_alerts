@@ -20,10 +20,9 @@
 
 import abc
 
-from six import add_metaclass
+from six import with_metaclass
 
-@add_metaclass(abc.ABCMeta)
-class Handler(object):
+class Handler(with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def doIt(self, info):

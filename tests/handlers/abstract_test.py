@@ -28,4 +28,4 @@ class HandlerTestCase(unittest.TestCase):
     def testInstantiation(self):
         """ It's an abstract class with an abstract method. """
         with self.assertRaises(TypeError):
-            Handler()
+            Handler() # pylint: disable=abstract-class-instantiated

@@ -20,10 +20,9 @@
 
 import abc
 
-from six import add_metaclass
+from six import with_metaclass
 
-@add_metaclass(abc.ABCMeta)
-class EjectionPolicy(object):
+class EjectionPolicy(with_metaclass(abc.ABCMeta, object)):
 
     @staticmethod
     @abc.abstractmethod

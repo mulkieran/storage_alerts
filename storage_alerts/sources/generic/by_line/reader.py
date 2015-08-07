@@ -20,12 +20,11 @@
 
 import abc
 
-from six import add_metaclass
+from six import with_metaclass
 
 from ..entry import NullEntry
 
-@add_metaclass(abc.ABCMeta)
-class Reader(object):
+class Reader(with_metaclass(abc.ABCMeta, object)):
     """ Reads and processes log entries. """
 
     @abc.abstractmethod

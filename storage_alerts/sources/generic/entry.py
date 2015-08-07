@@ -19,10 +19,9 @@
 """ An entry from a journal of some sort. """
 import abc
 
-from six import add_metaclass
+from six import with_metaclass
 
-@add_metaclass(abc.ABCMeta)
-class Entry(object):
+class Entry(with_metaclass(abc.ABCMeta, object)):
     """ A log entry of some sort.
 
         Subclasses of this class can enforce validity requirements for entries.
