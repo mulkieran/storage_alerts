@@ -45,18 +45,17 @@ class NoneEjector(EjectionPolicy):
         return scanners
 
 class NewerDuplicates(EjectionPolicy):
-    """ Eject any recognizer that has the same type, but is newer.
+    """ Eject any recognizer that is equal to a previous scanner, but newer.
 
         Precondition: list of scanners is in order from older to newer
     """
 
     @staticmethod
     def filtered(scanners):
-        types = dict()
+        keepers = dict()
         for s in scanners:
-            t = type(s)
-            if t in types:
+            if s in keepers:
                 pass
             else:
-                types[t] = None
+                keepers[s] = None
                 yield s

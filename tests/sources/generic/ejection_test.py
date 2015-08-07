@@ -35,8 +35,11 @@ class NewerDuplicatesTestCase(unittest.TestCase):
 
     def testEjection(self):
         """ Test that appropriate scanners are ejected. """
-        scanners = [1, 2, 3, "a", "b", "c", 4]
-        self.assertEqual(list(NewerDuplicates.filtered(scanners)), [1, "a"])
+        scanners = [1, 2, 3, "a", "b", "c", 1]
+        self.assertEqual(
+           list(NewerDuplicates.filtered(scanners)),
+           [1, 2, 3, "a", "b", "c"]
+        )
 
     def testEmpty(self):
         """ Test that empty list is handled correctly. """
