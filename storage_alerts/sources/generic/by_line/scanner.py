@@ -53,4 +53,5 @@ class LogScanner(object):
             final_yeses += yeses
             maybes = list(self._EJECTOR.filtered(maybes))
         final_yeses += [s for s in maybes if s.state is RecognizerStates.MAYBE_YES]
+        final_yeses = list(self._EJECTOR.filtered(final_yeses))
         return final_yeses, maybes

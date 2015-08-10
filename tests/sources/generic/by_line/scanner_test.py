@@ -68,15 +68,6 @@ class ScannerTestCase(unittest.TestCase):
         self.assertEqual(len(yeses), 0)
         self.assertEqual(len(maybes), 10)
 
-    def testEjection(self):
-        """ Ejecting all newer duplicates should leave just 1. """
-        manager = RecognizerManager([YesRecognizer()])
-        reader = NullReader(10)
-        scanner = LogScanner(reader, manager, NewerDuplicates)
-        yeses, maybes = scanner.matches(datetime.datetime.now, [])
-        self.assertEqual(len(yeses), 10)
-        self.assertEqual(len(maybes), 0)
-
     def testCurrentScanner(self):
         """ Show that passing in process scanners builds on previous. """
         manager = RecognizerManager([ManyRecognizer(11)])
@@ -94,3 +85,15 @@ class ScannerTestCase(unittest.TestCase):
         yeses, maybes = scanner.matches(datetime.datetime.now, many_recognizers)
         self.assertEqual(len(yeses), 5)
         self.assertEqual(len(maybes), 5)
+
+class EjectionTestCase(unittest.TestCase):
+    """ Test ejection of recognizers. """
+
+    def testEjection(self):
+        """ Ejecting all newer duplicates should leave just 1. """
+        manager = RecognizerManager([YesRecognizer()])
+        reader = NullReader(10)
+        scanner = LogScanner(reader, manager, NewerDuplicates)
+        yeses, maybes = scanner.matches(datetime.datetime.now, [])
+        self.assertEqual(len(yeses), 1)
+        self.assertEqual(len(maybes), 0)
