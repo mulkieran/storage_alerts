@@ -31,7 +31,9 @@ class Runner(object):
     def __init__(self, log_level=logging.DEBUG):
         logging.basicConfig(filename="storage_alerts.log", level=log_level)
         recognizers = [
-            sources.journal.by_line.recognizers.multipath.MultipathRecognizer()
+            sources.journal.by_line.recognizers.multipath.MultipathRecognizer(
+               sources.journal.by_line.recognizers.multipath.Parsing1()
+            )
         ]
 
         self._journal = controllers.time.FromTime(

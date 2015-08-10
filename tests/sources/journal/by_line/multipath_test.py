@@ -31,34 +31,36 @@ class Parsing1TestCase(unittest.TestCase):
     def testParsing1OfflineMessage(self):
         """ Test parsing message indicating offline. """
         message = "WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - path offline"
-        res = Parsing1.parseMessage(message)
+        res = Parsing1().parseMessage(message)
         self.assertEqual(res['MESSAGE_ID'], str(MessageIDs.MID_OFFLINE))
 
     def testParsing1OnlineMessage(self):
         """ Test parsing message indicating online. """
         message = "WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - directio checker reports path is up"
-        res = Parsing1.parseMessage(message)
+        res = Parsing1().parseMessage(message)
         self.assertEqual(res['MESSAGE_ID'], str(MessageIDs.MID_ONLINE))
 
     def testParsing1Empty(self):
         """ No failure on an empty message. """
-        res = Parsing1.parseMessage("")
+        res = Parsing1().parseMessage("")
         self.assertEqual(res, dict())
 
     def testParsing1RegMatch(self):
         """ Unmatched message returns an empty dict. """
-        res = Parsing1.parseMessage(": - ")
+        res = Parsing1().parseMessage(": - ")
         self.assertEqual(res, dict())
 
-class RecognizerTestCase(unittest.TestCase):
+class RecognizerTestCaseParsing1(unittest.TestCase):
     """ Test the recognizer itself. """
 
     MESSAGE_UP = 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - directio checker reports path is up'
     MESSAGE_DOWN = 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - path offline'
 
+    PARSER = Parsing1()
+
     def testIrrelevantProcess(self):
         """ If the process is not multipathd, the message is irrelevant. """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(self.PARSER)
         entry = Entry({
            '_COMM' : 'multipathr',
            'MESSAGE' : self.MESSAGE_DOWN
@@ -72,7 +74,7 @@ class RecognizerTestCase(unittest.TestCase):
 
     def testInitialFunction(self):
         """ Test initial state to recognized state by match. """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(self.PARSER)
         entry = Entry({
            '_COMM' : 'multipathd',
            'MESSAGE' : self.MESSAGE_DOWN
@@ -90,7 +92,7 @@ class RecognizerTestCase(unittest.TestCase):
 
     def testInitialFunction2(self):
         """ Test non-transition on online message. """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(self.PARSER)
         entry = Entry({
            '_COMM' : 'multipathd',
            'MESSAGE' : self.MESSAGE_UP
@@ -101,7 +103,7 @@ class RecognizerTestCase(unittest.TestCase):
 
     def testTransitionToFalse(self):
         """ Test transition to True and back to false. """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(self.PARSER)
         entry = Entry({
            '_COMM' : 'multipathd',
            'MESSAGE' : self.MESSAGE_DOWN
@@ -119,7 +121,7 @@ class RecognizerTestCase(unittest.TestCase):
         """ Two offline state messages about the same device should yield
             the same as one.
         """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(self.PARSER)
         entry = Entry({
            '_COMM' : 'multipathd',
            'MESSAGE' : self.MESSAGE_DOWN
@@ -137,7 +139,7 @@ class RecognizerTestCase(unittest.TestCase):
         """ Two offline state messages about different devices should cause
             second message to be ignored.
         """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(self.PARSER)
         entry = Entry({
            '_COMM' : 'multipathd',
            'MESSAGE' : self.MESSAGE_DOWN
@@ -157,7 +159,7 @@ class RecognizerTestCase(unittest.TestCase):
 
     def testMany(self):
         """ An offline state messages followed by an irrelevant message. """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(self.PARSER)
         entry = Entry({
            '_COMM' : 'multipathd',
            'MESSAGE' : self.MESSAGE_DOWN
@@ -179,7 +181,7 @@ class RecognizerTestCase(unittest.TestCase):
         """ An offline state messages followed by an irrelevant message.
             Unlike the other, this originated w/ multipathd.
         """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(self.PARSER)
         entry = Entry({
            '_COMM' : 'multipathd',
            'MESSAGE' : self.MESSAGE_DOWN
@@ -199,7 +201,7 @@ class RecognizerTestCase(unittest.TestCase):
 
     def testDifferentOnline(self):
         """ Test online message that does not match offline message. """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(self.PARSER)
         entry = Entry({
            '_COMM' : 'multipathd',
            'MESSAGE' : self.MESSAGE_DOWN
@@ -218,5 +220,5 @@ class HashTestCase(unittest.TestCase):
 
     def testEqual(self):
         """ Test equality of hash's after initialization. """
-        rec = MultipathRecognizer()
+        rec = MultipathRecognizer(Parsing1())
         self.assertEqual(hash(rec), hash(rec.initializeNew()))

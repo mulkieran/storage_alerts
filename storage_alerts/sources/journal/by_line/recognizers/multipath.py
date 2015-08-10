@@ -25,6 +25,8 @@ from uuid import UUID
 from ....generic.by_line.recognizer import Recognizer
 from ....generic.by_line.states import RecognizerStates
 
+from ...message_parser import MessageParser
+
 class _States(object):
     INITIAL = 0
     RECOGNIZED = 1
@@ -34,7 +36,7 @@ class MessageIDs(object):
     MID_OFFLINE = UUID('25a9f021-5c61-49db-974c-6e1000740332')
     MID_ONLINE = UUID('3fe62535-e4d6-4d09-a2ff-8b97057e689c')
 
-class Parsing1(object):
+class Parsing1(MessageParser):
     """ A class to hold all message parsing activity for handling online
         and offline messages.
 
@@ -53,13 +55,7 @@ class Parsing1(object):
         The plan is for this to ultimately go away.
     """
 
-    @staticmethod
-    def parseMessage(message):
-        """ Break the message up into key/value pairs.
-
-            :param str message: contents of log MESSAGE field
-            :returns: a dict of key/value pairs, empty if non-matching
-        """
+    def parseMessage(self, message):
         res = {}
 
         match = re.match(r'(?P<DEVICE>.*):(?P<PATH>.*) - (?P<status>.*)', message)
@@ -90,15 +86,21 @@ class MultipathRecognizer(Recognizer):
     _HASH = ord('M')
     description = "detects one kind of multipath failure"
 
-    def __init__(self):
+    def __init__(self, parser):
+        """ Initializer.
+
+            :param parser: parsing value of message field
+            :type parser: :class:`.message_parser.MessageParser`
+        """
         self._PROCESS = "multipathd"
+        self._PARSER = parser
         self._evidence = []
         self.fsmstate = _States.INITIAL
         self.device = None
         self.path = None
 
     def initializeNew(self):
-        return MultipathRecognizer()
+        return MultipathRecognizer(self._PARSER)
 
     def __eq__(self, other):
         return type(other) is MultipathRecognizer and \
@@ -170,7 +172,7 @@ class MultipathRecognizer(Recognizer):
 
             :param :class:`..entry.Entry` entry: a journal entry
         """
-        message_dict = Parsing1.parseMessage(entry.fields.get("MESSAGE", ""))
+        message_dict = self._PARSER.parseMessage(entry.fields.get("MESSAGE", ""))
         entry.fields.update(message_dict)
         if self.fsmstate is _States.INITIAL:
             self.fsmstate = self._initialFunc(entry)
