@@ -22,6 +22,7 @@ import unittest
 from storage_alerts.sources.journal.by_line.recognizers.multipath import MessageIDs
 from storage_alerts.sources.journal.by_line.recognizers.multipath import MultipathRecognizer
 from storage_alerts.sources.journal.by_line.recognizers.multipath import Parsing1
+from storage_alerts.sources.journal.by_line.recognizers.multipath import Parsing2
 from storage_alerts.sources.journal.entry import Entry
 from storage_alerts.sources.generic.by_line.states import RecognizerStates
 
@@ -48,6 +49,31 @@ class Parsing1TestCase(unittest.TestCase):
     def testParsing1RegMatch(self):
         """ Unmatched message returns an empty dict. """
         res = Parsing1().parseMessage(": - ")
+        self.assertEqual(res, dict())
+
+class Parsing2TestCase(unittest.TestCase):
+    """ Test parsing multipath syslog messages. """
+
+    def testParsing2ReinstatedMessage(self):
+        """ Test parsing message indicating offline. """
+        message = "8:144: reinstated"
+        res = Parsing2().parseMessage(message)
+        self.assertEqual(res['MESSAGE_ID'], str(MessageIDs.MID_ONLINE))
+
+    def testParsing2FailedMessage(self):
+        """ Test parsing message indicating offline. """
+        message = "checker failed path 8:144 in map WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY"
+        res = Parsing2().parseMessage(message)
+        self.assertEqual(res['MESSAGE_ID'], str(MessageIDs.MID_OFFLINE))
+
+    def testParsing1Empty(self):
+        """ No failure on an empty message. """
+        res = Parsing2().parseMessage("")
+        self.assertEqual(res, dict())
+
+    def testParsing1RegMatch(self):
+        """ Unmatched message returns an empty dict. """
+        res = Parsing2().parseMessage(": - ")
         self.assertEqual(res, dict())
 
 class RecognizerTestCaseParsing1(unittest.TestCase):

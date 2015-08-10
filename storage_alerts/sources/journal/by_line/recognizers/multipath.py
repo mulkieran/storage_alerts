@@ -80,6 +80,50 @@ class Parsing1(MessageParser):
 
         return res
 
+class Parsing2(MessageParser):
+    """ A class to hold all message parsing activity for handling failed
+        and reinstated messages.
+
+        Examples:
+         * checker failed path 8:144 in map WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY
+         * 8:144: reinstated
+
+        Fields are:
+         * MAJOR
+         * MINOR
+         * DEVICE if MESSAGE_ID is MID_OFFLINE
+
+        Also, fake up a MESSAGE_ID field, based on what the message is
+        discovered to be.
+
+        The plan is for this to ultimately go away.
+    """
+
+    re1 = re.compile(r'checker failed path (?P<MAJOR>[0-9]+):(?P<MINOR>[0-9]+) in map (?P<DEVICE>.*)') # pylint: disable=line-too-long
+    re2 = re.compile(r'(?P<MAJOR>[0-9]+):(?P<MINOR>[0-9]+):.*reinstated')
+
+    def parseMessage(self, message):
+        res = {}
+
+        match = re.match(self.re1, message) or re.match(self.re2, message)
+        if match:
+            match = match.groupdict()
+            for k in match:
+                match[k] = match[k].strip()
+
+            if 'DEVICE' in match:
+                res['MESSAGE_ID'] = str(MessageIDs.MID_OFFLINE)
+                res['%s:STATUS' % MessageIDs.MID_OFFLINE] = 'offline'
+            else:
+                res['MESSAGE_ID'] = str(MessageIDs.MID_ONLINE)
+                res['%s:STATUS' % MessageIDs.MID_ONLINE] = 'online'
+
+            mid = res['MESSAGE_ID']
+            for k in match:
+                res[mid + ":" + k] = match[k]
+
+        return res
+
 class MultipathRecognizer(Recognizer):
     """ A recognizer that detects one kind of multipath failure. """
 
