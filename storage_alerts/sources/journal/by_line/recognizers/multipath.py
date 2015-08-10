@@ -29,34 +29,36 @@ class _States(object):
     INITIAL = 0
     RECOGNIZED = 1
 
-class Parsing(object):
-    """ A class to hold all message parsing activity.
+class MessageIDs(object):
+    """ Class for message ids. """
+    MID_OFFLINE = UUID('25a9f021-5c61-49db-974c-6e1000740332')
+    MID_ONLINE = UUID('3fe62535-e4d6-4d09-a2ff-8b97057e689c')
+
+class Parsing1(object):
+    """ A class to hold all message parsing activity for handling online
+        and offline messages.
+
+        Examples:
+         * WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - path offline
+         * WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - directio checker reports path is up
+
+        Fields are:
+         * DEVICE
+         * PATH
+         * STATUS
+
+        Also, fake up a MESSAGE_ID field, based on what the message is
+        discovered to be.
 
         The plan is for this to ultimately go away.
     """
 
-    MID_OFFLINE = UUID('25a9f021-5c61-49db-974c-6e1000740332')
-    MID_ONLINE = UUID('3fe62535-e4d6-4d09-a2ff-8b97057e689c')
-
-    @classmethod
-    def parseMessage(cls, message):
+    @staticmethod
+    def parseMessage(message):
         """ Break the message up into key/value pairs.
 
             :param str message: contents of log MESSAGE field
             :returns: a dict of key/value pairs, empty if non-matching
-            :rtype: dict
-
-            Examples:
-             * WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - path offline
-             * WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - directio checker reports path is up
-
-            Fields are:
-             * DEVICE
-             * PATH
-             * STATUS
-
-            Also, fake up a MESSAGE_ID field, based on what the message is
-            discovered to be.
         """
         res = {}
 
@@ -69,11 +71,11 @@ class Parsing(object):
             status_str = str(match['status'])
             del match['status']
             if status_str.endswith('path offline'):
-                res['MESSAGE_ID'] = str(cls.MID_OFFLINE)
-                res['%s:STATUS' % cls.MID_OFFLINE] = 'offline'
+                res['MESSAGE_ID'] = str(MessageIDs.MID_OFFLINE)
+                res['%s:STATUS' % MessageIDs.MID_OFFLINE] = 'offline'
             elif status_str.endswith('path is up'):
-                res['MESSAGE_ID'] = str(cls.MID_ONLINE)
-                res['%s:STATUS' % cls.MID_ONLINE] = 'online'
+                res['MESSAGE_ID'] = str(MessageIDs.MID_ONLINE)
+                res['%s:STATUS' % MessageIDs.MID_ONLINE] = 'online'
 
             mid = res.get('MESSAGE_ID')
             if mid:
@@ -125,7 +127,7 @@ class MultipathRecognizer(Recognizer):
 
         if comm == self._PROCESS:
             mid = fields.get("MESSAGE_ID")
-            if mid == str(Parsing.MID_OFFLINE):
+            if mid == str(MessageIDs.MID_OFFLINE):
                 self._evidence.append(entry)
                 self.device = fields.get('%s:DEVICE' % mid)
                 self.path = fields.get('%s:PATH' % mid)
@@ -145,13 +147,13 @@ class MultipathRecognizer(Recognizer):
 
         if comm == self._PROCESS:
             mid = fields.get('MESSAGE_ID')
-            if mid == str(Parsing.MID_OFFLINE):
+            if mid == str(MessageIDs.MID_OFFLINE):
                 device = fields.get('%s:DEVICE' % mid)
                 path = fields.get('%s:PATH' % mid)
                 if self.device == device and self.path == path:
                     self._evidence.append(entry)
                 return _States.RECOGNIZED
-            elif mid == str(Parsing.MID_ONLINE):
+            elif mid == str(MessageIDs.MID_ONLINE):
                 device = fields.get('%s:DEVICE' % mid)
                 path = fields.get('%s:PATH' % mid)
                 if self.device == device and self.path == path:
@@ -168,7 +170,7 @@ class MultipathRecognizer(Recognizer):
 
             :param :class:`..entry.Entry` entry: a journal entry
         """
-        message_dict = Parsing.parseMessage(entry.fields.get("MESSAGE", ""))
+        message_dict = Parsing1.parseMessage(entry.fields.get("MESSAGE", ""))
         entry.fields.update(message_dict)
         if self.fsmstate is _States.INITIAL:
             self.fsmstate = self._initialFunc(entry)

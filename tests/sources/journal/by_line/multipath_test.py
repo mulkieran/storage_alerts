@@ -19,34 +19,35 @@
 """ Test recognizers. """
 import unittest
 
+from storage_alerts.sources.journal.by_line.recognizers.multipath import MessageIDs
 from storage_alerts.sources.journal.by_line.recognizers.multipath import MultipathRecognizer
-from storage_alerts.sources.journal.by_line.recognizers.multipath import Parsing
+from storage_alerts.sources.journal.by_line.recognizers.multipath import Parsing1
 from storage_alerts.sources.journal.entry import Entry
 from storage_alerts.sources.generic.by_line.states import RecognizerStates
 
-class ParsingTestCase(unittest.TestCase):
+class Parsing1TestCase(unittest.TestCase):
     """ Test parsing multipath syslog messages. """
 
-    def testParsingOfflineMessage(self):
+    def testParsing1OfflineMessage(self):
         """ Test parsing message indicating offline. """
         message = "WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - path offline"
-        res = Parsing.parseMessage(message)
-        self.assertEqual(res['MESSAGE_ID'], str(Parsing.MID_OFFLINE))
+        res = Parsing1.parseMessage(message)
+        self.assertEqual(res['MESSAGE_ID'], str(MessageIDs.MID_OFFLINE))
 
-    def testParsingOnlineMessage(self):
+    def testParsing1OnlineMessage(self):
         """ Test parsing message indicating online. """
         message = "WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - directio checker reports path is up"
-        res = Parsing.parseMessage(message)
-        self.assertEqual(res['MESSAGE_ID'], str(Parsing.MID_ONLINE))
+        res = Parsing1.parseMessage(message)
+        self.assertEqual(res['MESSAGE_ID'], str(MessageIDs.MID_ONLINE))
 
-    def testParsingEmpty(self):
+    def testParsing1Empty(self):
         """ No failure on an empty message. """
-        res = Parsing.parseMessage("")
+        res = Parsing1.parseMessage("")
         self.assertEqual(res, dict())
 
-    def testParsingRegMatch(self):
+    def testParsing1RegMatch(self):
         """ Unmatched message returns an empty dict. """
-        res = Parsing.parseMessage(": - ")
+        res = Parsing1.parseMessage(": - ")
         self.assertEqual(res, dict())
 
 class RecognizerTestCase(unittest.TestCase):
