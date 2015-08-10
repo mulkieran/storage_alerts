@@ -45,6 +45,9 @@ class ProcessRecognizer(Recognizer):
     def __ne__(self, other):
         return type(other) != ProcessRecognizer or self.PROCESS != other.PROCESS
 
+    def __hash__(self):
+        return hash(self.PROCESS)
+
     def _consume(self, entry):
         """ Consumes a journal entry.
 

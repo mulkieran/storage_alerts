@@ -24,6 +24,8 @@ from .states import RecognizerStates
 class YesRecognizer(Recognizer):
     """ A recognizer that always says yes. """
 
+    _HASH = ord('Y')
+
     description = "any journal entry represents an error"
 
     def __init__(self):
@@ -37,6 +39,9 @@ class YesRecognizer(Recognizer):
 
     def __ne__(self, other):
         return type(other) != YesRecognizer
+
+    def __hash__(self):
+        return self._HASH
 
     def _consume(self, entry):
         self._evidence = [entry]
@@ -57,6 +62,7 @@ class YesRecognizer(Recognizer):
 class LazyRecognizer(Recognizer):
     """ A recognizer that doesn't say yes until it has to. """
 
+    _HASH = ord('L')
     description = "any journal entry represents an unrefutable error"
 
     def __init__(self):
@@ -70,6 +76,9 @@ class LazyRecognizer(Recognizer):
 
     def __ne__(self, other):
         return type(other) != LazyRecognizer
+
+    def __hash__(self):
+        return self._HASH
 
     def _consume(self, entry):
         if self.state is RecognizerStates.MAYBE_YES:
@@ -92,6 +101,7 @@ class LazyRecognizer(Recognizer):
 class NoRecognizer(Recognizer):
     """ A recognizer that always says no. """
 
+    _HASH = ord('N')
     description = "does not recognize any errors"
 
     def initializeNew(self):
@@ -102,6 +112,9 @@ class NoRecognizer(Recognizer):
 
     def __ne__(self, other):
         return type(other) != NoRecognizer
+
+    def __hash__(self):
+        return self._HASH
 
     def _consume(self, entry):
         pass
@@ -141,6 +154,9 @@ class ManyRecognizer(Recognizer):
 
     def __ne__(self, other):
         return type(other) != ManyRecognizer or self.NUMBER != other.NUMBER
+
+    def __hash__(self):
+        return self.NUMBER
 
     def initializeNew(self):
         return ManyRecognizer(self.NUMBER)

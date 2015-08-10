@@ -211,3 +211,11 @@ class RecognizerTestCase(unittest.TestCase):
         })
         rec.consume(entry)
         self.assertEqual(rec.state, RecognizerStates.MAYBE_YES)
+
+class HashTestCase(unittest.TestCase):
+    """ Test hashing. """
+
+    def testEqual(self):
+        """ Test equality of hash's after initialization. """
+        rec = MultipathRecognizer()
+        self.assertEqual(hash(rec), hash(rec.initializeNew()))

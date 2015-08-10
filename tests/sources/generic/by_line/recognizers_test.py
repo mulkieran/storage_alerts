@@ -182,3 +182,21 @@ class ManyRecognizerTestCase(unittest.TestCase):
 
         self.assertEqual(rec, rec2)
         self.assertNotEqual(rec, ManyRecognizer(2))
+
+class HashTestCase(unittest.TestCase):
+    """ Test hashing properties. """
+
+    _RECS = [
+       LazyRecognizer(),
+       ManyRecognizer(2),
+       NoRecognizer(),
+       YesRecognizer()
+    ]
+
+    def setUp(self):
+        self._recs = [r.initializeNew() for r in self._RECS]
+
+    def testEqualNew(self):
+        """ Test that newly initialized recognizers hash to same value. """
+        for r in self._RECS:
+            self.assertEqual(hash(r), hash(r.initializeNew()))

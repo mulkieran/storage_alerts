@@ -85,6 +85,7 @@ class Parsing(object):
 class MultipathRecognizer(Recognizer):
     """ A recognizer that detects one kind of multipath failure. """
 
+    _HASH = ord('M')
     description = "detects one kind of multipath failure"
 
     def __init__(self):
@@ -108,6 +109,9 @@ class MultipathRecognizer(Recognizer):
            self.fsmstate is not other.fsmstate or \
            self.device != other.device or \
            self.path != other.path
+
+    def __hash__(self):
+        return self._HASH
 
     def _initialFunc(self, entry):
         """ Func for INITIAL state.

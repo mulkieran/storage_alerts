@@ -79,3 +79,11 @@ class ProcessRecognizerTestCase(unittest.TestCase):
 
         self.assertEqual(rec, rec2)
         self.assertNotEqual(rec, ProcessRecognizer("multipathd"))
+
+class HashTestCase(unittest.TestCase):
+    """ Test hashing properties. """
+
+    def testEqualNew(self):
+        """ Test that a new process recognizer hashes to the same value. """
+        rec = ProcessRecognizer("random")
+        self.assertEqual(hash(rec), hash(rec.initializeNew()))
