@@ -87,7 +87,10 @@ class LazyRecognizer(Recognizer):
 
     @property
     def state(self):
-        return RecognizerStates.MAYBE_YES if self._evidence else RecognizerStates.NO
+        if self._evidence:
+            return RecognizerStates.MAYBE_YES
+        else:
+            return RecognizerStates.NO
 
     @property
     def evidence(self):

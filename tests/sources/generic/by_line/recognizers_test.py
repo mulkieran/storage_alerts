@@ -48,6 +48,7 @@ class YesRecognizerTestCase(unittest.TestCase):
         self.assertEqual(len(rec.info), 0)
 
     def testCopy(self):
+        """ Test that the copy does not behave like the original. """
         rec = YesRecognizer()
         rec.consume(None)
         self.assertEqual(rec.state, RecognizerStates.YES)

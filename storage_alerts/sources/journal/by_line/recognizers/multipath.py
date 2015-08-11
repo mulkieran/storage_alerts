@@ -37,6 +37,8 @@ class MessageIDs(object):
     MID_ONLINE = UUID('3fe62535-e4d6-4d09-a2ff-8b97057e689c')
 
 class Parsing1(MessageParser):
+    # pylint: disable=line-too-long
+
     """ A class to hold all message parsing activity for handling online
         and offline messages.
 
@@ -55,10 +57,12 @@ class Parsing1(MessageParser):
         The plan is for this to ultimately go away.
     """
 
+    re1 = re.compile(r'(?P<DEVICE>.*):(?P<PATH>.*) - (?P<status>.*)')
+
     def parseMessage(self, message):
         res = {}
 
-        match = re.match(r'(?P<DEVICE>.*):(?P<PATH>.*) - (?P<status>.*)', message)
+        match = re.match(self.re1, message)
         if match:
             match = match.groupdict()
             for k in match:
@@ -216,7 +220,9 @@ class MultipathRecognizer(Recognizer):
 
             :param :class:`..entry.Entry` entry: a journal entry
         """
-        message_dict = self._PARSER.parseMessage(entry.fields.get("MESSAGE", ""))
+        message_dict = self._PARSER.parseMessage(
+           entry.fields.get("MESSAGE", "")
+        )
         entry.fields.update(message_dict)
         if self.fsmstate is _States.INITIAL:
             self.fsmstate = self._initialFunc(entry)

@@ -52,6 +52,6 @@ class LogScanner(object):
             yeses, maybes = self._MANAGER.processEntry(entry, maybes)
             final_yeses += yeses
             maybes = list(self._EJECTOR.filtered(maybes))
-        final_yeses += [s for s in maybes if s.state is RecognizerStates.MAYBE_YES]
+        final_yeses += [s for s in maybes if s.state is RecognizerStates.MAYBE_YES] # pylint: disable=line-too-long
         final_yeses = list(self._EJECTOR.filtered(final_yeses))
         return final_yeses, maybes

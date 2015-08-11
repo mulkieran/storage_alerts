@@ -37,7 +37,7 @@ class Parsing1TestCase(unittest.TestCase):
 
     def testParsing1OnlineMessage(self):
         """ Test parsing message indicating online. """
-        message = "WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - directio checker reports path is up"
+        message = "WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - directio checker reports path is up" # pylint: disable=line-too-long
         res = Parsing1().parseMessage(message)
         self.assertEqual(res['MESSAGE_ID'], str(MessageIDs.MID_ONLINE))
 
@@ -62,7 +62,7 @@ class Parsing2TestCase(unittest.TestCase):
 
     def testParsing2FailedMessage(self):
         """ Test parsing message indicating offline. """
-        message = "checker failed path 8:144 in map WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY"
+        message = "checker failed path 8:144 in map WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY" # pylint: disable=line-too-long
         res = Parsing2().parseMessage(message)
         self.assertEqual(res['MESSAGE_ID'], str(MessageIDs.MID_OFFLINE))
 
@@ -79,7 +79,7 @@ class Parsing2TestCase(unittest.TestCase):
 class RecognizerTestCaseParsing1(unittest.TestCase):
     """ Test the recognizer itself. """
 
-    MESSAGE_UP = 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - directio checker reports path is up'
+    MESSAGE_UP = 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - directio checker reports path is up' # pylint: disable=line-too-long
     MESSAGE_DOWN = 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY: sdk - path offline'
 
     PARSER = Parsing1()
@@ -173,7 +173,7 @@ class RecognizerTestCaseParsing1(unittest.TestCase):
         rec.consume(entry)
         entry = Entry({
            '_COMM' : 'multipathd',
-           'MESSAGE' : 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELK: sda - path offline'
+           'MESSAGE' : 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELK: sda - path offline' # pylint: disable=line-too-long
         })
         rec.consume(entry)
         self.assertEqual(rec.state, RecognizerStates.MAYBE_YES)
@@ -193,7 +193,7 @@ class RecognizerTestCaseParsing1(unittest.TestCase):
         rec.consume(entry)
         entry = Entry({
            '_COMM' : 'multipathr',
-           'MESSAGE' : 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELK: sda - path offline'
+           'MESSAGE' : 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELK: sda - path offline' # pylint: disable=line-too-long
         })
         rec.consume(entry)
         self.assertEqual(rec.state, RecognizerStates.MAYBE_YES)
@@ -233,7 +233,7 @@ class RecognizerTestCaseParsing1(unittest.TestCase):
            'MESSAGE' : self.MESSAGE_DOWN
         })
         rec.consume(entry)
-        message = 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELK: sda - directio checker reports path is up'
+        message = 'WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELK: sda - directio checker reports path is up' # pylint: disable=line-too-long
         entry = Entry({
            '_COMM' : 'multipathd',
            'MESSAGE' : message

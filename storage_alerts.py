@@ -20,12 +20,14 @@
 
 import sys
 
+from six.moves import input
+
 from storage_alerts import Runner
 
 def main():
     runner = Runner()
     while True:
-        raw_input("> ")
+        input(" > ")
         runner.run()
 
 if __name__ == "__main__":

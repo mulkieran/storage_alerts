@@ -25,4 +25,5 @@ class StatesTestCase(unittest.TestCase):
     """ Exercise states methods. """
 
     def testStr(self):
+        """ Exercise a state's __str__ method. """
         self.assertIsNotNone(str(RecognizerStates.MAYBE_NO))

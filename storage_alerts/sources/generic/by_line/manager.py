@@ -53,5 +53,5 @@ class RecognizerManager(object):
         for scanner in scanners:
             scanner.consume(entry)
         yeses = [s for s in scanners if s.state is RecognizerStates.YES]
-        maybes = [s for s in scanners if s.state in (RecognizerStates.MAYBE_STATES)]
+        maybes = [s for s in scanners if s.state in (RecognizerStates.MAYBE_STATES)] # pylint: disable=line-too-long
         return yeses, maybes

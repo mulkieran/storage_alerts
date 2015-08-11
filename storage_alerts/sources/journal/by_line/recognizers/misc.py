@@ -40,7 +40,8 @@ class ProcessRecognizer(Recognizer):
         return ProcessRecognizer(self.PROCESS)
 
     def __eq__(self, other):
-        return type(other) == ProcessRecognizer and self.PROCESS == other.PROCESS
+        return type(other) == ProcessRecognizer and \
+           self.PROCESS == other.PROCESS
 
     def __ne__(self, other):
         return type(other) != ProcessRecognizer or self.PROCESS != other.PROCESS
