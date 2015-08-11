@@ -11,6 +11,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   intro
+   making
    storage_alerts/modules
    tests/modules
 
