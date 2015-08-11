@@ -50,3 +50,6 @@ coverage:
 
 archive:
 	git archive --format tar.gz HEAD > storage_alerts.tar.gz
+
+go:
+	PYTHONPATH=. python storage_alerts.py
