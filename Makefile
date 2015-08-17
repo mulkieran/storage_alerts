@@ -52,7 +52,10 @@ view:
 	done
 
 doc-html:
-	cd doc; $(MAKE) clean html
+	cd doc/sphinx; $(MAKE) clean html
+
+doc-proposal:
+	cd doc; lyx design.lyx --export pdf
 
 clean:
 	-rm -Rf _pyreverse

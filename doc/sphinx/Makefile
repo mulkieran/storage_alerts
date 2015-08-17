@@ -8,8 +8,8 @@ SPHINXAPIDOC  = sphinx-apidoc
 SPHINXAPIOPTS = --private --separate
 PAPER         =
 BUILDDIR      = _build
-SOURCEDIR     = ../storage_alerts
-TESTDIR       = ../tests
+SOURCEDIR     = ../../storage_alerts
+TESTDIR       = ../../tests
 
 # User-friendly check for sphinx-build
 ifeq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 1)

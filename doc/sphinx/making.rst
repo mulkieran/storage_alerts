@@ -33,3 +33,6 @@ Using the Makefile
 
 * To generate a git archive:
    > make archive
+
+* To build the design document
+   > make doc-design

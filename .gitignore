@@ -51,9 +51,9 @@ coverage.xml
 *.log
 
 # Sphinx documentation
-doc/_build/
-doc/storage_alerts
-doc/tests
+doc/sphinx/_build/
+doc/sphinx/storage_alerts
+doc/sphinx/tests
 
 # PyBuilder
 target/
