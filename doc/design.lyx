@@ -69,7 +69,7 @@
 \begin_body
 
 \begin_layout Title
-Storage Alerts Journal API
+Storage Alerts Journal API Proposal
 \end_layout
 
 \begin_layout Author
@@ -77,14 +77,6 @@ Anne Mulhern
 \end_layout
 
 \begin_layout Section
-Overview
-\end_layout
-
-\begin_layout Section
-Entries
-\end_layout
-
-\begin_layout Subsection
 Background
 \end_layout
 
@@ -110,11 +102,11 @@ Systemd provides a MESSAGE_ID field which can be used to identify categories
  message.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Proposal
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Log Entries
 \end_layout
 
@@ -177,7 +169,7 @@ y identify the devices involved.
  device from the key values.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Provider Responsibilities
 \end_layout
 
@@ -198,7 +190,14 @@ Each provider should supply a list of MESSAGE_IDs that it may publish as
  is that it is not programmatically available without installation.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Itemize
+The provider must offer a guarantee that it will log certain events whenever
+ they happen.
+ For this reason, the events that it logs should at least initially be kept
+ to a minimum of those considered most important for consumers.
+\end_layout
+
+\begin_layout Subsection
 Framework Responsibilites
 \end_layout
 
@@ -227,29 +226,426 @@ The framework must communicate at least the information about the event
  itself.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Itemize
+The framework may synthesize additional information for consumers.
+ For example, it could navigate the sysfs tree to discover other affected
+ layers in the storage stack.
+\end_layout
+
+\begin_layout Subsection
 Systemd Responsibilities
 \end_layout
 
 \begin_layout Itemize
-Systemd should synthesize additional device information from device information
+Systemd might synthesize additional device information from device information
  supplied by the log entry.
  Currently systemd synthesizes information if the kernel supplies a DEVICE
  field.
  This becomes _KERNEL_DEVICE in the log entry, and journald figures out
  for itself the values of _UDEV_SYSNAME, _UDEV_DEVNODE, and _UDEV_DEVLINK
  if available.
- It will need to have a uniform naming scheme, since the provider may refer
- to multiple devices.
+ In the case of user-space process supplied information, this device information
+ falls into the fakeable category, so should not be prepended with an underscore.
+ In any case, systemd has made the choice to allow multiple key/value mapping,
+ as may arise in the case of _UDEV_DEVLINK.
+ There is no existing structure to distinguish one instance from another.
+ In some cases, as with multipath paths, the ability to specify a particular
+ path of several paths might be useful.
+ However, any sort of indexing mechanism would have to be cobbled together
+ to achieve this.
+ 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Consumer Requirements
 \end_layout
 
 \begin_layout Itemize
 The information supplied should be sufficient to allow the consumer to understan
 d and remediate the problem.
+\end_layout
+
+\begin_layout Itemize
+The information supplied should be sufficient to allow tracking events of
+ interest as they occur over time in the journal.
+ This would be useful to track trends or consistencies in behavior.
+\end_layout
+
+\begin_layout Section
+Examples
+\end_layout
+
+\begin_layout Standard
+The following are some examples to illustrate the proposal.
+\end_layout
+
+\begin_layout Standard
+With all examples, it is necessary to intuit what consumers would find to
+ be of interest.
+\end_layout
+
+\begin_layout Subsection
+Multipath Path Failure
+\end_layout
+
+\begin_layout Standard
+We know that it is always an important event when all paths to a device
+ go down.
+ Interestingly, mutipathd and multipath commands do not really show the
+ failure of a map in any unambiguous way, showing instead the failure of
+ individual paths.
+\end_layout
+
+\begin_layout Subsubsection
+Alerting
+\end_layout
+
+\begin_layout Standard
+Below is a sample catalog entry for this event.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},showstringspaces=false"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+-- 6ad753f9616221d7769f698aa1ed526cfc95534b
+\end_layout
+
+\begin_layout Plain Layout
+
+Subject: All paths for multipath device @MPATH_DEVICE@ are offline.
+\end_layout
+
+\begin_layout Plain Layout
+
+Defined-By: multipathd
+\end_layout
+
+\begin_layout Plain Layout
+
+Support: <appropriate link here>
+\end_layout
+
+\begin_layout Plain Layout
+
+Documentation: <appropriate link here>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+All paths for multipath map @MPATH_MAP@ have gone offline.
+\end_layout
+
+\begin_layout Plain Layout
+
+Consequently, device @MPATH_MAP_DMNODE@ is no longer usable.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+We do not list the paths here in the catalog entry.
+ Some keys, like MPATH_PATH_DEVICE may have multiple values associated with
+ them.
+ At this point, the way that substitution is done in the catalog entry is
+ that an arbitrary value is selected.
+ This would be misleading, so it is necessary to avoid using keys that may
+ be bound to multiple values in the catalog entry.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And below is a sample specification for the key file.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},showstringspaces=false"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+-- 6ad753f9616221d7769f698aa1ed526cfc95534b
+\end_layout
+
+\begin_layout Plain Layout
+
+MPATH_MAP           # map of paths to device
+\end_layout
+
+\begin_layout Plain Layout
+
+MPATH_MAP_DMNODE    # device mapper node corresponding to map -- derived
+\end_layout
+
+\begin_layout Plain Layout
+
+MPATH_DEVICE_WWID   # wwid of underlying device -- derived
+\end_layout
+
+\begin_layout Plain Layout
+
+MPATH_PATH_DEVICE   # kernel device name of path(s), followed by devnode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The comments distinguish values that multipathd should 
+\begin_inset Quotes eld
+\end_inset
+
+know
+\begin_inset Quotes erd
+\end_inset
+
+, from those which are derived.
+\end_layout
+
+\begin_layout Standard
+An actual journal entry would contain the following special key/value pairs,
+ as well as the key/value pairs automatically inserted by journald.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="2">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+key
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+value
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MESSAGE_ID
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6ad753f9616221d7769f698aa1ed526cfc95534b
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MPATH_MAP
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+WDC_WD10EFRX-68PJCN0_WD-WCC4JLHVDELY
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MPATH_MAP_DMNODE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+/dev/dm-2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MPATH_DEVICE_WWID
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+wwn-0x50014ee2603ef578
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MPATH_PATH_DEVICE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+b8:144,/dev/sdj,0:0:12:0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MPATH_PATH_DEVICE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+b8:160,/dev/sdk,0:0:14:0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+MESSAGE_ID identifies the log entry category
+\end_layout
+
+\begin_layout Itemize
+MPATH_MAP is the globally unique map name 
+\end_layout
+
+\begin_layout Itemize
+MPATH_MAP_DMNODE is the device mapper node corresponding to the map
+\end_layout
+
+\begin_layout Itemize
+MPATH_DEVICE_WWID seems like a useful value, for tracking purposes
+\end_layout
+
+\begin_layout Itemize
+the mpath map has several paths, all down, so the kernel device name, the
+ devnode, and the host:channel:id:lun number is included for each path
+\end_layout
+
+\begin_layout Subsubsection
+Verifying
+\end_layout
+
+\begin_layout Standard
+The value of MPATH_MAP should be sufficient to allow a check of whether
+ all the map's paths have actually failed to be implemented by multipath.
+\end_layout
+
+\begin_layout Subsubsection
+Identifying Consequences
+\end_layout
+
+\begin_layout Standard
+If all the paths have failed then the underlying device, including any partition
+ on it, is innacessible.
+ By the same token, the device can not be interrogated to find out its partition
+s, and so forth.
+ To identify the partitions on the device probably requires navigating the
+ sysfs directories via the holders or slaves subdirectory, in the manner
+ of blkid.
+ One possible option is to traverse the holders sysfs directories and discover
+ possible consequences for each discovered device in the hierarchy.
+ This can be done passively, by simply synthesizing a possible problem from
+ the structure of the tree, or actively, by interrogating the appropriate
+ libraries and applications for corresponding devices.
+ 
+\end_layout
+
+\begin_layout Section
+Technical Notes
+\end_layout
+
+\begin_layout Paragraph
+Traversing Sysfs via slaves or holders
+\end_layout
+
+\begin_layout Standard
+There do not seem to be any libraries around to do this.
+ On the other hand, it is ultimately just a directory traversal, and therefore
+ not so hard to implement.
+ python-pyudev is a wrapper for libudev which can be readily extended to
+ implement this traversal.
+ 
 \end_layout
 
 \end_body
